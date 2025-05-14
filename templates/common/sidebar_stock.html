@@ -1,0 +1,233 @@
+<!-- 
+ 사이드바 UI - Stock 컨트롤러용
+ @author yds@ntrex on 2023.02.16
+ -->
+<!-- 왼쪽 메뉴 리스트 [시작] -->
+<div class="col-lg-2 col-sg-1 position-relative h-auto pe-1 leftsidebar" id="LeftSideBar">
+	<ul class="nav d-block">
+		<li class="nav-item">
+			<button class="btn w-100 text-start" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+				<span data-bs-toggle="tooltip" data-bs-placement="right" title="재고관리">
+					<i class="fa-solid fa-warehouse"></i>
+				</span>
+				<span class='sidebar_text'>재고관리</span>
+				<span class="sidebar_icon_right"><i class="fa-solid fa-angle-down fold"></i></span>
+			</button>
+			<div class="collapse ms-3" id="home-collapse">
+				<ul class="nav flex-column pb-1 small">
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_GoodsManage_DP" onclick="location.href='{% url 'stocks:goods_manage' %}';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="제품조회">
+								<i class="fa-solid fa-boxes-stacked"></i>
+							</span>
+							<span class='sidebar_text'>제품조회</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" data-bs-toggle="collapse" data-bs-target="#import-collapse" aria-expanded="false">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="입고">
+								<i class="fa-solid fa-boxes-packing"></i>
+							</span>
+							<span class='sidebar_text'>입고</span>
+							<span class="sidebar_icon_right"><i class="fa-solid fa-angle-down fold"></i></span>
+						</button>
+						<div class="collapse ms-3" id="import-collapse">
+							<ul class="nav flex-column pb-1 small">
+								<li class="nav-item">
+									<button class="btn btn-sm w-100 text-start" id="M_GoodsImport_V2_DP" onclick="location.href='/Stock/GoodsImport_V2_DP';">
+										<span data-bs-toggle="tooltip" data-bs-placement="right" title="입고 V2">
+											<i class="fa-solid fa-arrow-up-wide-short"></i>
+										</span>
+										<span class='sidebar_text'>입고 V2</span>
+									</button>
+								</li>
+								<li class="nav-item">
+									<button class="btn btn-sm w-100 text-start" id="M_GoodsImport_Complete_DP" onclick="location.href='/Stock/GoodsImport_Complete_DP';">
+										<span data-bs-toggle="tooltip" data-bs-placement="right" title="입고 기록">
+											<i class="fa-solid fa-layer-group"></i>
+										</span>
+										<span class='sidebar_text'>입고 기록</span>
+									</button>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" data-bs-toggle="collapse" data-bs-target="#export-collapse" aria-expanded="false">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="출고">
+								<i class="fa-solid fa-arrow-down-wide-short"></i>
+							</span>
+							<span class='sidebar_text'>출고</span>
+							<span class="sidebar_icon_right"><i class="fa-solid fa-angle-down fold"></i></span>
+						</button>
+						<div class="collapse ms-3" id="export-collapse">
+							<ul class="nav flex-column pb-1 small">
+								<li class="nav-item">
+									<button class="btn btn-sm w-100 text-start" id="M_GoodsExportSearch_DP" onclick="location.href='/Stock/GoodsExportSearch_DP';">
+										<span data-bs-toggle="tooltip" data-bs-placement="right" title="검색 출고">
+											<i class="fa-solid fa-magnifying-glass"></i>
+										</span>
+										<span class='sidebar_text'>검색 출고</span>
+									</button>
+								</li>
+								<li class="nav-item">
+									<button class="btn btn-sm w-100 text-start" id="M_GoodsExportBarcode_DP" onclick="location.href='/Stock/GoodsExportBarcode_DP';">
+										<span data-bs-toggle="tooltip" data-bs-placement="right" title="바코드 출고">
+											<i class="fa-solid fa-barcode"></i>
+										</span>
+										<span class='sidebar_text'>바코드 출고</span>
+									</button>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_ExportAmount_DP" onclick="location.href='/Stock/ExportAmount_DP';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="출고">
+								<i class="fa-solid fa-magnifying-glass-chart"></i>
+							</span>
+							<span class='sidebar_text'>출고 누적 통계</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_GoodsStock_DP" onclick="location.href='/Stock/GoodsStock_DP';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="수량조정">
+								<i class="fa-solid fa-cubes-stacked"></i>
+							</span>
+							<span class='sidebar_text'>수량조정</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_GoodsHistory_DP" onclick="location.href='/Stock/GoodsHistory_DP';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="기록보기">
+								<i class="fa-solid fa-clock-rotate-left"></i>
+							</span>
+							<span class='sidebar_text'>기록보기</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_Malignity_DP" onclick="location.href='/Stock/Malignity_DP';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="악성재고">
+								<i class="fa-solid fa-face-surprise"></i>	
+							</span>
+							<span class='sidebar_text'>악성재고</span>
+						</button>
+					</li>	
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_PriceHistory_DP" onclick="location.href='/Stock/PriceHistory_DP';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="입고가변동">
+								<i class="fa-solid fa-chart-line"></i>
+							</span>
+							<span class='sidebar_text'>입고가변동</span>
+						</button>
+					</li>		
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" data-bs-toggle="collapse" data-bs-target="#bucket-collapse" aria-expanded="false">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="발주">
+								<i class="fa-solid fa-cart-shopping"></i>
+							</span>
+							<span class='sidebar_text'>발주</span>
+							<span class="sidebar_icon_right"><i class="fa-solid fa-angle-down fold"></i></span>
+						</button>
+						<div class="collapse ms-3" id="bucket-collapse">
+							<ul class="nav flex-column pb-1 small">
+								<li class="nav-item">
+									<button class="btn btn-sm w-100 text-start" id="M_GoodsOrderAdd_DP" onclick="location.href='/Stock/GoodsOrderAdd_DP';">
+										<span data-bs-toggle="tooltip" data-bs-placement="right" title="발주 등록">
+											<i class="fa-solid fa-basket-shopping"></i>
+										</span>
+										<span class='sidebar_text'>발주 등록</span>
+									</button>
+								</li>
+								<li class="nav-item">
+									<button class="btn btn-sm w-100 text-start" id="M_GoodsOrder_DP" onclick="location.href='/Stock/GoodsOrder_DP';">
+										<span data-bs-toggle="tooltip" data-bs-placement="right" title="발주 대상">
+											<i class="fa-solid fa-bucket"></i>
+										</span>
+										<span class='sidebar_text'>발주 대상</span>
+									</button>
+								</li>
+								<li class="nav-item">
+									<button class="btn btn-sm w-100 text-start" id="M_GoodsOrderComplete_DP" onclick="location.href='/Stock/GoodsOrderComplete_DP';">
+										<span data-bs-toggle="tooltip" data-bs-placement="right" title="발주 완료">
+											<i class="fa-solid fa-check"></i>
+										</span>
+										<span class='sidebar_text'>발주 완료</span>
+									</button>
+								</li>
+							</ul>
+						</div>
+
+					</li>	
+				</ul>
+			</div>
+		</li>
+		<li class="nav-item">
+			<button class="btn w-100 text-start" data-bs-toggle="collapse" data-bs-target="#manager-collapse" aria-expanded="false">
+				<span data-bs-toggle="tooltip" data-bs-placement="right" title="담당관리">
+					<i class="fa-solid fa-users-gear"></i>
+				</span>
+				<span class='sidebar_text'>담당관리</span>
+				<span class="sidebar_icon_right"><i class="fa-solid fa-angle-down fold"></i></span>
+			</button>
+			<div class="collapse ms-3" id="manager-collapse">
+				<ul class="nav flex-column pb-1 small">
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_CodeManager_List" onclick="location.href='/Code/CodeManager_List';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="재고문의담당">
+								<i class="fa-solid fa-person-circle-question"></i>
+							</span>
+							<span class='sidebar_text'>재고문의담당</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</li>
+		<li class="nav-item">
+			<button class="btn w-100 text-start" data-bs-toggle="collapse" data-bs-target="#data-collapse" aria-expanded="false">
+				<span data-bs-toggle="tooltip" data-bs-placement="right" title="데이터관리">
+					<i class="fa-solid fa-database"></i>
+				</span>
+				<span class='sidebar_text'>데이터관리</span>
+				<span class="sidebar_icon_right"><i class="fa-solid fa-angle-down fold"></i></span>
+			</button>
+			<div class="collapse ms-3" id="data-collapse">
+				<ul class="nav flex-column pb-1 small">
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start"id="M_CodeCompany_List"  onclick="location.href='/Code/CodeCompany_List';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="거래처">
+								<i class="fa-solid fa-building"></i>
+							</span>
+							<span class='sidebar_text'>거래처관리</span>
+						</button>
+					</li>
+
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_StockPlace_List"  onclick="location.href='/Code/StockPlace_List';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="거래처">
+								<i class="fa-solid fa-people-carry-box"></i>
+							</span>
+							<span class='sidebar_text'>재고위치관리</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start" id="M_PackageManage_DP"  onclick="location.href='/SubData/PackageManage_DP';">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="패키지 구성">
+								<i class="fa-solid fa-boxes-packing"></i>
+							</span>
+							<span class='sidebar_text'>패키지 구성</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</li>
+	</ul>
+	
+</div>
+<!-- 왼쪽 메뉴 리스트 [종료] -->
+
+<!-- 접기/펼치기 버튼 -->
+<button class="btn btn-sm btn-light fixed-top" type="button" id="LeftSideBarBtn"></button>
+
+<!-- Top 버튼 -->
+<button class="btn btn-sm btn-light fixed-bottom" type="button" id="TopMoveBtn"></button>

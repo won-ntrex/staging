@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- 
+ Main 기본 페이지
+ @author yds@ntrex on 2023.03.29
+ -->
+ <style>
+	p.bullet { padding-left: 5px; margin-bottom: 5px; }
+	p.bullet:before { content: "* "; }
+</style>
+<!-- Breadcrumb -->
+	<nav class="mb-4" aria-label="breadcrumb" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);">
+		<ol class="breadcrumb fw-bold">
+			<li class="breadcrumb-item">재고관리</li>
+			<li class="breadcrumb-item active" aria-current="page">안내</li>
+		</ol>
+	</nav>
+
+<!-- Title Area -->
+	<div class="row justify-content-between w-auto">
+		<div class="col h4 fw-bold">재고관리 사용 안내</div>
+	</div>
+
+<!-- Info Area -->
+<div class="card" style="width:fit-content;">
+	<div class="card-body">
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item">
+				<h5 class="card-title">메뉴 사용 권한</h5>
+				<p class="card-text ms-1">
+					각 사용자별 관리자가 메뉴 사용 권한을 부여하기 때문에 사용자별 메뉴를 이용할 수 있는 권한이 존재 합니다.
+					<br>
+					업무에 맞는 권한이 필요한 경우 관리자에게 문의해주시기 바랍니다.
+				</p>
+			</li>
+			<li class="list-group-item">
+				<h5 class="card-title">메뉴 설명</h5>
+				<p class="card-text bullet">재고관리 : 제품 정보 관리, 입고 관리, 출고 관리, 이력 조회 기능을 제공합니다.</p>
+				<p class="card-text bullet">데이터 관리 : 거래처, 바코드 관리 기능을 제공합니다.</p>
+			</li>
+		</ul>
+		
+	</div>
+</div>
+{% endblock %}

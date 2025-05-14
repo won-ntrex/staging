@@ -1,0 +1,92 @@
+<!-- 
+ 사이드바 UI - 기본
+ @author yds@ntrex on 2023.02.16
+ -->
+<!-- 왼쪽 메뉴 리스트 -->
+<div class="col-lg-2 col-sg-1 position-relative h-auto pe-1 leftsidebar" id="LeftSideBar">
+	<div class='sidebar_text mb-3'>
+		<p>기본으로 사용되는 Sidebar 기본 원형 입니다.</p>
+	</div>
+	<ul class="nav fixed-top position-sticky d-block">
+		<li class="nav-item">
+			<button class="btn w-100 text-start" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+				<span data-bs-toggle="tooltip" data-bs-placement="right" title="기본 메뉴">
+					<i class="fa-solid fa-house"></i>
+				</span>
+				<span class='sidebar_text'>기본 메뉴</span>
+				<span class="sidebar_icon_right"><i class="fa-solid fa-angle-up fold"></i></span>
+			</button>
+			<div class="collapse ms-3 show" id="home-collapse">
+				<ul class="nav flex-column pb-1 small">
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="메뉴1">
+								<i class="fa-solid fa-caret-right"></i>
+							</span>
+							<span class='sidebar_text'>메뉴1</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="메뉴2">
+								<i class="fa-solid fa-caret-right"></i>
+							</span>
+							<span class='sidebar_text'>메뉴2</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="...">
+								<i class="fa-solid fa-caret-right"></i>
+							</span>
+							<span class='sidebar_text'>...</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</li>
+		<li class="nav-item">
+			<button class="btn w-100 text-start" data-bs-toggle="collapse" data-bs-target="#data-collapse" aria-expanded="false">
+				<span data-bs-toggle="tooltip" data-bs-placement="right" title="부가 메뉴">
+					<i class="fa-solid fa-house-circle-exclamation"></i>
+				</span>
+				<span class='sidebar_text'>부가 메뉴</span>
+				<span class="sidebar_icon_right"><i class="fa-solid fa-angle-up fold"></i></span>
+			</button>
+			<div class="collapse ms-3" id="data-collapse">
+				<ul class="nav flex-column pb-1 small">
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="메뉴1">
+								<i class="fa-solid fa-caret-right"></i>
+							</span>
+							<span class='sidebar_text'>메뉴1</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="메뉴2">
+								<i class="fa-solid fa-caret-right"></i>
+							</span>
+							<span class='sidebar_text'>메뉴2</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-sm w-100 text-start">
+							<span data-bs-toggle="tooltip" data-bs-placement="right" title="...">
+								<i class="fa-solid fa-caret-right"></i>
+							</span>
+							<span class='sidebar_text'>...</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</li>
+	</ul>
+</div>
+
+<!-- 접기/펼치기 버튼 -->
+<button class="btn btn-sm btn-light fixed-top" type="button" id="LeftSideBarBtn"></button>
+
+<!-- Top 버튼 -->
+<button class="btn btn-sm btn-light fixed-bottom" type="button" id="TopMoveBtn"></button>

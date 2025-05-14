@@ -1,0 +1,99 @@
+	/* --------------- 상단 고정 기능 때문에 강제 Height 지정 필요 ------------------ */
+	.goods-object { min-height: 100vh; }
+
+	/* --------------- 출고 일괄 처리 버튼 지정 ------------------------------------- */
+	.export-send { padding:10px;}
+	.export-send button { width: 100%; }
+	/* 출고 일괄 처리 버튼 상단 고정 */
+	.export-send.movetop {
+		position: fixed;
+		top:0px;
+		background-color: white;
+		border:1px solid darkgray;
+		border-radius: 5px;
+		z-index:1000 !important;
+	}
+	/* ----------------- 검색 결과 상품 표기용 ------------------------- */
+	#barcode-list thead.table-light { border-color: #9f9f9f !important; }
+	#barcode-list thead th { padding: 14px; font-size: 1.05rem; background-color:lightgray; }
+	#barcode-list tbody tr:hover { background-color:#f2f9ff; }
+	#barcode-list tbody td.goods-name { padding: 14px; font-size:0.9rem; font-weight:bolder; }
+	#barcode-list tbody td { padding: 16px 12px; font-size:0.9rem; }
+	#barcode-list.movetop { margin-top:85px; }
+
+	/* 상품 정보 표기용 */
+	.table-img img { width:50px !important; }	/* 이미지 크기 */
+	.select-option-name { color:royalblue; font-weight:normal; padding:2px 5px 2px 5px; }	/* 상품의 선택된 옵션명 표기 */
+
+	/* 테이블의 옵션 선택 필요 표시 용 */
+	.select-guide-text { color: #ffb9b9; }						/* 옵션 선택 필요 안내 텍스트 */
+	.list-select-goods { background-color:#f2f9ff !important; }	/* 옵션 상품 선택 반전 색깔 */
+
+	.ignore-btn { border: 0px solid #f99090; };
+
+	/* --------------- 옵션 보기 테이블 스크롤 및 thead 상단 고정용 ------------------------
+		thead의 sticky 지정으로 scroll 발생시 border의 색이 빠지게 되므로
+		separate와 spacing를 강제 하고, th와 td에 border를 강제 지정 해야 함
+	 */
+	#hb-target-option-object { width: 100%; max-width: -webkit-fill-available; }
+
+	/* 스크롤 시 옵션 보기 영역 우측 상단 고정 */
+	#hb-target-option-object.movetop { position: fixed; right:14px; width: inherit; min-width:400px; max-width:690px; background-color: white; border:1px solid lightgray; padding:5px; border-radius: 5px; }
+
+	/* 옵션 보기 영역의 상품명 표기 */
+	#option-goods-name { height:53px; display: flex; /*align-items: flex-end;*/ }
+
+	/* 옵션 보기 영역의 옵션 목록 scroll 지정 */
+	.tableFixHead { width: 100%; max-height: calc(100vh - 230px); overflow: auto; border: 1px solid darkgray !important; }
+
+	/* tHead 상단고정 영역 설정 */
+	.tableFixHead table {
+		width: 100%;
+		border-collapse: separate; /* Don't collapse */
+		border-spacing: 0;
+	}
+
+	/* thead 상단 고정 */
+	.tableFixHead table thead { position: sticky; top: 0; }
+
+	/* 타이틀 부분 border 지정 */
+	.tableFixHead table thead tr th:first-child { border-left:0px solid darkgray !important; }
+	.tableFixHead table thead tr th { background-color:lightgray; border-bottom: 1px solid darkgray !important; border-left: 1px solid darkgray !important; }
+	.tableFixHead table thead tr th:last-child { border-right: 1px solid darkgray !important; }
+
+	/* 옵션 구분 border 지정 */
+	.tableFixHead table tbody tr td:first-child { border-left:0px solid darkgray !important; }
+	.tableFixHead table tbody tr td { border-left: 1px solid lightgray !important; }
+	.tableFixHead table tbody tr td:last-child { border-right: 1px solid lightgray !important; }
+
+	/* 옵션 구분 - 추가 지정 */
+	.tableFixHead table tbody tr td.border-top-custom { border-top: 2px solid lightgray !important; }	/* 옵션 구분선 */
+	.tableFixHead table tbody tr.tr_select_bg { background-color:#f2f9ff !important; }					/* 옵션 선택용 배경색 */
+	.tableFixHead table tbody tr.tr_select_stock_bg { background-color:#f2f9ff !important; }			/* 옵션 선택용 배경색 */
+
+	/* 옵션 재고위치 hover */
+	.option-hover-bg:hover { background-color: #fff9f9 !important; }
+
+	.table-title-size { font-size:15px !important; }
+	.export-guide-text { font-size:12px !important; }	/* 출고 수량 input 텍스트 */
+
+	/* jquery-ui autocomplete 드롭다운 목록 높이 고정용 */
+	.ui-autocomplete { max-height: 400px; overflow-y: auto; overflow-x: hidden; z-index:1000 !important; }
+
+
+	/* 안내 메시지 용 */
+	.info-text { font-size: 14px; }
+
+	/* 상품중복 표기용 TR 배경색 */
+	.duplicatetr { background-color:orange; }
+
+
+	/* 출고 수량 추이 */
+	#exportChart {
+		/* width: 100%; min-width:600px; max-width:700px;
+		height: 100%; min-width:300px; max-width:340px; */
+		position: fixed; right:14px; top:40px; background-color: white; border:1px solid lightgray; padding:5px; border-radius: 5px;
+	}
+	#exportChart.bordernone { border:0px solid lightgray; }
+	#export-top-list .trhover { background-color: #fff9f9 !important; }
+	#export-top-list tbody tr {height: 60px !important;}

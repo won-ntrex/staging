@@ -1,0 +1,59 @@
+.modal.fade, .modal.fade .modal-dialog {
+    -webkit-transition: 0.1s;
+        -moz-transition: 0.1s;
+        -ms-transition: 0.1s;
+            -o-transition: 0.1s;
+            transition: 0.1s;
+}
+
+/* 검색폼 사이즈 */
+#sea-form { width: fit-content; }
+
+/* 테이블 크기 지정 */
+.list-line-block { width: 100%; }
+
+/* 영역의 overflow 안생기도록 지정 */
+#current-contents > div {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+}
+
+/* ----------- 모바일 사이즈(540 이하) 검색폼 영역 토글 버튼 : collapse ----------- */
+#collape-form-btn { display: none !important; }
+#collape-form { transition-property: none; transition-duration: 0ms; }
+@media screen and (max-width: 540px) {
+    /* 검색 도구 버튼 / 검색 폼 토글 */
+    #collape-form-btn { display: inline-block !important; }
+    #collape-form.show { display: none; }
+    #collape-form:not(.show) { display: block; }
+
+    /* 목록 항목 사이즈 */
+    .collapseParent {
+        width: 100%;
+    }
+}
+/* 정렬 기호 */
+th[data-sort] { cursor:pointer; }
+th[data-sort]:hover { background-color:#d5dcff;	}
+th[data-sort]:before {
+    font: var(--fa-font-solid);
+    position: relative;
+    float:right;
+    top: 4px;
+}
+th[data-sort="none"]:before { content: "\f0dc"; opacity: 0.5; }		/* sort */
+th[data-sort="asc" ]:before { content: "\f0de"; color:#fd0d0d; }	/* sort-up */
+th[data-sort="desc"]:before { content: "\f0dd"; color:#fd0d0d; }	/* sort-down */
+
+/* 목록 행 커서 지정 */
+.list-line-block { cursor:pointer; }
+
+/* 검색용 체크박스 변경 */
+div.checkbox-lg, div.radio-lg { margin-right: 0.2rem !important; }
+input.checkbox-lg, input.radio-lg { scale: 1.4; margin-left: -0.7rem !important; margin-right: 0.4rem !important;}
+label.checkbox-lg, label.radio-lg { font-size: 13px; }
+
+/* */
+.vtable { display: table !important; }
+.vtable-cell { display: table-cell !important; vertical-align: middle !important; padding-right: 10px; }

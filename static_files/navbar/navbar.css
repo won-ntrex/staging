@@ -1,0 +1,41 @@
+/**
+ * navbar 스타일
+ * @author yds@ntrex on 2023.02.16
+ */
+
+ /* navbar 기본 변경 */
+#TopNavBar { height: var(--navbar--height); z-index: 1040; }
+#TopNavBar * { font-size: 16px !important; }
+#TopNavBar .nav-item { margin-left: 10px; }
+#TopNavBar .nav-item .nav-link { transition-duration:0.0s; }
+#TopNavBar .nav-item .nav-link:hover { background-color: lightgray !important;	border-radius: 6px; }
+
+/* navbar active 지정 */
+#TopNavBar .nav-item.active { background-color: gray !important; border-radius: 6px; }
+#TopNavBar .nav-item.active .nav-link { color:white; font-weight: bold; }
+#TopNavBar .nav-item.active .nav-link:hover { background-color: gray !important; color:#ffffd2; }
+
+/* dropdown 재지정 */
+#TopNavBar .nav-item.dropdown.active ul .nav-link { color:#707071; font-weight: normal !important; border-radius: 0px !important;}
+#TopNavBar .nav-item.dropdown.active ul .nav-link:hover { background-color: lightgray !important; }
+#TopNavBar .nav-item.dropdown.active ul li.active .nav-link { color:white; background-color: #a2a2a2 !important; font-weight: normal !important; border-radius: 0px !important;}
+#TopNavBar .nav-item.dropdown.active ul li.active .nav-link:hover { color:#ffffd2; }
+#TopNavBar .dropdown-menu.show {min-width: max-content;}
+
+
+/* 화면 사이즈가 특정 Width 보다 작을 때 메뉴를 감사는 div 태그 속성 재지정 */
+@media (width<991px) {
+	#navbarSupportedContent {
+		width: auto;
+		max-height: calc(100vh - 40px);
+		height: auto !important;
+		padding: 10px !important;
+		border-radius: 5px;
+		border: 1px solid lightgray;
+		background-color: #F8F9FA;
+	}
+	#TopNavBar .nav-item .nav-link, #navbarSupportedContent ul li.dropdown li {
+		padding:5px;
+		width: auto !important;;
+	}
+}

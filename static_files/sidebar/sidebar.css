@@ -1,0 +1,119 @@
+/**
+ * 사이드바 스타일
+ * @author yds@ntrex on 2023.02.16
+ */
+
+/* 사이드바 메뉴 영역 */
+	.leftsidebar {
+		width:200px;
+		background-color:#fcfcfc;
+		color: #323232;
+		height:calc(100vh - 54px);
+		transition: all 0.3s;/*  <<--- display를 none로 할때는 먹지를 않는다.*/
+		padding-top: 10px;
+		min-height: calc(100vh - var(--footer--min-height) - var(--navbar--height)) !important;
+		/* container query */
+		container-type: inline-size;
+		container-name: leftsidebar;
+	}
+	.leftsidebar * { color: #323232 !important; }
+	.leftsidebar.reduce { width: var(--sidebar--min-width); }
+	.leftsidebar button { white-space: nowrap; }
+	
+	/* 서브메뉴들이 좌우로 움직이는 현상이 있어 애니매이션 조정 */
+	.leftsidebar div.collapsing {
+		/* 애니메이션 중단 : -webkit-transition: none; transition: none; display: none; */
+		/* 애니메이션 속도 빠르게 하여 서브메뉴 움직임 최소화 시킴 */
+		transition: height 0.01s;
+	}
+
+/* 사이드바 서브 메뉴 선택 */
+	.leftsidebar .nav-item button.btn-sm:hover { transition: all 0s; background: linear-gradient(#e2f9ff, #bfe2ff, #e2f9ff); }
+	.leftsidebar .nav-item button.btn-sm:hover path, .leftsidebar .nav-item button.btn-sm:hover span { transition: all 0s; color: #323232 !important; }
+	.leftsidebar .nav-item button.active { transition: all 0s; background: linear-gradient(#62baff, #145bde, #62baff); }
+	.leftsidebar .nav-item button.active path, .leftsidebar .nav-item button.active span { transition: all 0s; color: white !important; }
+	.leftsidebar .nav-item button.active:hover { transition: all 0s; background: linear-gradient(#62baff, #145bde, #62baff); }
+	.leftsidebar .nav-item button.active:hover path, .leftsidebar .nav-item button.active:hover span { transition: all 0s; color: white !important; }
+
+/* 서브메뉴의 아이콘 크기(가운데 정렬) 지정 */
+	.leftsidebar .collapse .nav-item button svg, .leftsidebar .collapse .nav-item button i { width: 16px !important; }
+
+/* 사이드바 메뉴 텍스트 : 영역 크기에 따른 숨기기 옵션 */
+	.sidebar_text { display:inherit; margin-left:10px; transition: all 0.3s; }
+	.sidebar_icon_right { float: right; }
+	@container leftsidebar (width < 80px) { .sidebar_text { display:none; } }
+	@container leftsidebar (width < 170px) { .sidebar_icon_right { display:none; } }
+
+/* 사이드바 내부 nav height에 따른 overflow-y 지정 */
+	#LeftSideBar > ul { max-height: calc(100vh - 2.4%); overflow-x: hidden; overflow-y: auto; top: 30px !important; }
+
+/* 사이드바 접기 펼치기 버튼 위치 */
+	#LeftSideBarBtn {
+		width: 26px;
+		left: 187px;
+		top: 64px;
+		opacity:0.9;
+		border-radius: 50%;
+		border:1px solid #dddcdc;
+		padding: 1px 5px;
+		transition: all 0.3s;
+	}
+	#LeftSideBarBtn.active { top:64px; left: 57px; opacity:0.5; }
+/* 사이드바 접기 펼치기 버튼 모양 */
+	#LeftSideBarBtn:before {
+		font: var(--fa-font-solid);
+		content: "\f100";	/*left*/
+	}
+	#LeftSideBarBtn.active:before {
+		font: var(--fa-font-solid);
+		content: "\f101";	/*right*/
+	}
+
+/* 사이드바 TOP 버튼 */
+	#TopMoveBtn {
+		width: 26px;
+		left: 187px;
+		bottom: 10px;
+		opacity:0.9;
+		border-radius: 50%;
+		border:1px solid #dddcdc;
+		padding: 1px 5px;
+		transition: all 0.3s;
+		display:block;
+		visibility:hidden;
+	}
+	#TopMoveBtn:before {
+		font: var(--fa-font-solid);
+		content: "\f102";
+	}
+	#TopMoveBtn.shown { visibility: visible; }
+	#TopMoveBtn.up { bottom: 140px; }
+	#TopMoveBtn.left { left: 57px;  opacity:0.5; }
+
+/* 화면 사이즈가 작을 때 사이드바 및 접기&펼치기 버튼 포지션 뒤집기 */
+@media (width<768px) {
+	/* 사이드바 width 조정 */
+	.leftsidebar { width: var(--sidebar--min-width) !important; }
+	.leftsidebar.reduce { width:200px !important; }
+
+	/* 사이드바 내부 height 조정 */
+	/*#LeftSideBar > ul { max-height: calc(100vh - 1.1%) !important; }*/
+	#LeftSideBar > ul { max-height: 100vh !important; }
+
+	/* 사이드바 접기&펼치기 버튼 위치 */
+	#LeftSideBarBtn { top:60px !important; left: 57px !important; opacity:0.5 !important; }
+	#LeftSideBarBtn.active { top:64px !important; left: 187px !important; opacity:0.9 !important; }
+	/* 사이드바 접기&펼치기 버튼 모양 */
+	#LeftSideBarBtn:before { content: "\f101"; }
+	#LeftSideBarBtn.active:before { content: "\f100"; }
+
+	/* Top 버튼 위치 조정 */
+	#TopMoveBtn { left: 57px !important; }
+	#TopMoveBtn.left { left: 187px !important; }
+
+	/* 메인 컨텐츠 폭 변경 */
+	#current-contents {
+		width: calc(1rem - var(--sidebar--min-width));
+		overflow-x: hidden;
+	}
+}

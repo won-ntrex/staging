@@ -1,0 +1,73 @@
+/**
+ * 기본 스타일
+ * @author yds@ntrex on 2023.02.16
+ */
+
+/* VARIABLES CSS */
+:root {
+	--navbar--height: 54px;
+	--sidebar--min-width: 70px;
+	--footer--min-height: 59px;
+}
+
+html, body {padding:0px; margin:0px; height:100%; background-color:white; }
+div { font-size:12px; }
+body > div.container-fluid:nth-child(1) { min-height: calc(100vh - var(--footer--min-height)); }
+
+/* 본문 width / 가로 스크롤 지정 */
+#current-contents { width: auto; overflow-x:auto; }
+/* 본문 내부의 화면사이즈 대비 최소 폭(width) 지정 */
+#current-contents > div { width: 100%; min-width:650px; }
+
+/* 하단 footer height / 수직 정렬 */
+#footer { height: var(--footer--min-height); }
+footer { line-height: calc(var(--footer--min-height) -1px); }
+
+/* 버튼 클릭 시 외곽 강조 효과 제거 */
+.btn:active, .btn:focus { box-shadow:none !important;}
+
+/* 텍스트 크기 */
+.code_1em { font-size:1em !important; }
+
+/* Input, Select 테두리 그림자 없애기 */
+input:active, input:focus { box-shadow: none !important; }
+select:active, select:focus { box-shadow: none !important; }
+
+
+/* Loading screen */	
+.spinner-border {
+	display: block;
+	position: fixed;
+	top: calc(50% - (58px / 2));  
+	right: calc(50% - (58px / 2));
+	color: red;
+}
+#loading-backdrop {
+	position:absolute;
+	top:0;
+	width: 100vw;
+	height: 100%;
+	z-index: 10000;
+	background-color: rgb(0,0,0,0.2);
+	display: none;
+}
+
+/* cursor */
+.c-pointer { cursor:pointer !important; }
+
+ul.ui-autocomplete{
+	max-height : 300px;
+	overflow : auto;
+	max-width: 60%;
+}
+
+.logo { position: relative; left: 7%;}
+.form_custom { min-height: 50px; height:auto; line-height: 10px; }
+.input_custom { height: 45px !important; }
+/* screen width : 작은 화면 지원 */
+@media screen and (max-width: 570px) {}
+	.logo {
+		width: 300px;
+		top: 10px;
+	}
+}

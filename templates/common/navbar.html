@@ -1,0 +1,30 @@
+<!-- 네비게이션바 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li>
+                    <a  class="nav-link" href="/">홈</a>
+                </li>
+                <li class="nav-item">
+                    {% comment %} {% if user.is_authenticated %} {% endcomment %}
+                    {% if request.session.login_user %}
+                    <a class="nav-link" href="{% url 'members:logout' %}">{{ request.session.login_user.name }} (로그아웃)</a>
+                    {% else %}
+                    <a class="nav-link" href="{% url 'members:login' %}">로그인</a>
+                    {% endif %}
+                </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'stocks:stock' %}">재고관리</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'members:member_list' %}">사용자</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

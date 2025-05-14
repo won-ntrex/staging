@@ -1,0 +1,60 @@
+/**
+ * 입고(ver 2)용
+ * @author yds@ntrex on 2024.07.09
+ */
+
+/* handlebars로 출력된 input : 입고가, 입고수량 */
+	.hbinput { text-align:right; }
+	.form-check-input-lg {
+		width: 1.2em;
+		height: 1.2em;
+		transform: scale(1.2);
+	}
+/* 입고 목록의 table */
+	#export-list > thead > tr { height: 60px; border-color:gray;}
+	#export-list > thead > tr > th { background-color:#e6e6e6; }
+	/* 마우스 오버 기능 정의 */
+	#export-list > tbody > tr { position: relative; }
+	#export-list > tbody > tr > td.goods-name { font-size:14px; }
+	#export-list > tbody > tr:hover { background-color:#f6fbff; }
+	/* #export-list > tbody > tr.goodsline:not(.choiceline):hover::after { */
+	#export-list > tbody > tr.goodsline:not(.choiceline):hover > td:nth-child(2)::after {
+		content: '▼';
+		position: absolute;
+		left: 40%;
+		bottom: -12px;
+		transform: translateY(-50%);
+		font-size: 23px;
+		color: orange;
+		opacity: 0.6;
+	  }
+	
+	/* TR 선택시 배경색과 테두리 변경 */
+	tr.choiceline {
+		background-color: #fafdfd !important;
+	}
+	tr.goodsline.choiceline {
+		border-top: 2px solid #daac77 !important;
+		border-left: 2px solid #daac77 !important;
+		border-right: 2px solid #daac77 !important;
+	}
+	tr.orderline {
+		border-bottom: 2px solid #daac77 !important;
+		border-left: 2px solid #daac77 !important;
+		border-right: 2px solid #daac77 !important;
+	}
+	tr.goodsline.choiceline > td {
+		border-left: 1px solid #DEE2E6 !important;
+		border-right: 1px solid #DEE2E6 !important;
+	}
+	tr.orderline.choiceline > td {
+		border-left: 1px solid #DEE2E6 !important;
+		border-right: 1px solid #DEE2E6 !important;
+	}
+
+/* 발주 정보 table */
+	.ordertable th:first-child, .ordertable td:first-child { border-left:none !important; }
+	.ordertable th:last-child, .ordertable td:last-child {  border-right:none !important; }
+	.ordertable tr th { background-color:#f9f9f4; }
+
+	

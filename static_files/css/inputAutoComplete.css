@@ -1,0 +1,27 @@
+.ui-autocomplete {
+    position: relative !important;
+    max-width: 400px !important; /* 최대 너비를 설정합니다 */
+    min-height: 50px; /* 최소 높이를 설정합니다 */
+    overflow-y: auto; /* 내용이 많을 때 스크롤이 생기도록 합니다 */
+    max-height: 330px !important; /* 최대 높이를 설정합니다 */
+    box-sizing: border-box; /* 패딩과 테두리를 포함한 크기를 계산합니다 */
+}
+
+.ui-menu-item {
+    white-space: nowrap; /* 항목 내용이 줄바꿈되지 않도록 설정합니다 */
+    overflow: hidden; /* 넘치는 내용을 숨깁니다 */
+    /* text-overflow: ellipsis; 넘치는 내용을 줄임표(...)로 표시합니다 */
+}
+
+.autocomplete-close {
+    position: absolute;
+    width: fit-content;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+    background: #f00;
+    color: #fff;
+    padding: 5px 5px;
+    border-radius: 3px;
+    z-index: 1000; /* 닫기 버튼이 목록 항목 위에 표시되도록 설정합니다 */
+}

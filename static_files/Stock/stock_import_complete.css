@@ -1,0 +1,40 @@
+/* autocomplete 드롭다운 메뉴에 스크롤바가 생겨서 margin 없앰 */
+	.ui-menu-item-wrapper.ui-state-active { margin: 0px; }
+
+/* 마우스 오버 기능 정의 */
+	#import-list { width: 1200px !important; }
+	#import-list > tbody > tr { position: relative; box-sizing:border-box; width:100%;}
+	#import-list > tbody > tr > td.goods-name { font-size:14px; }
+	#import-list > tbody > tr:nth-child(odd):hover { background-color:#f6fbff; }
+	
+	#import-list > tbody > tr.goodsline:hover > td:nth-child(2)::after {
+		content: '▼';
+		position: absolute;
+		left: 50%;
+		bottom: -12px;
+		transform: translateY(-50%);
+		font-size: 23px;
+		color: orange;
+		opacity: 0.6;
+	}
+	tr.goodsline {
+		border-top: 2px solid #e1e1e1 !important;
+	}
+
+/* 두줄일때를 위한 line-height 늘이기 */
+	#import-list > tbody > tr > td.doubleline { line-height:22px; }
+
+/* 기간 선택 버튼의 선택 표기용 색반전 항목 */
+	#collape-form.btn.active {
+		background-color: transparent;
+		color: white;
+		border-color: white;
+	}
+	#collape-form.btn-outline-secondary.active {
+		background-color: #6c757d;
+		color: white;
+	}
+	#collape-form.btn-outline-danger.active {
+		background-color: #dc3545;
+		color: white;
+	}

@@ -1,0 +1,1261 @@
+<!-- 재고용 기본 Style -->
+	<link rel="stylesheet" href="/assets/Stock/stock.css?v=" />
+	<link rel="stylesheet" href="/assets/Stock/stock_ui2.css?v=" />
+	<style>
+		/* :root { --goods--list--width: 960px; } */
+
+		/* 제품조회용 상품목록 테이블 설정 */
+		#barcode-list-container { min-width:100%; }
+		#barcode-list tbody td { padding:7px; }
+		#barcode-list tbody img { width:auto !important; max-height:40px; }
+		.summary-text { font-size:0.8rem; color:darkgray; }
+		#hb-target-option-object.movetop { min-width:810px; max-width:calc(100% - 150px) !important; border-color: #9f9f9f;}
+		#option-goods-name { height: auto; display:block; background-color:lightgray; margin:-5px -5px !important; border-bottom:1px solid #9f9f9f;
+		    border-top-left-radius: inherit;
+    		border-top-right-radius: inherit;
+		}
+		
+		/* 옵션 autocomplate 기능으로 폭이 좁은 상태일때 스크롤바가 나타나면서 벌어지는 잇슈로 스크롤바 고정 시키기 */
+		.ui-autocomplete { overflow-y:scroll !important; }
+
+		/* 제품조회를 위해 가로 최대폭을 지정 */
+		.goods-object { max-width:960px !important; min-width: auto !important;}
+		
+		/* 테이블이 탭메뉴 지정 때문에 최소 사이즈로 줄어 들어 강제 변경 */
+		.tab-content>.active { display: inline-table !important; }
+
+		/* 정보창 사이즈 및 표기 텍스트 크기 지정 */
+		.tableFixHead { min-height: 230px !important; }
+		.info-text { font-size:14px !important; }
+		.info-text-col-title { text-align: center; font-size:14px !important; width:90px; }
+		.info-text-value { font-size:14px !important; }
+		.table.info td {
+			border-left: 0px solid lightgray !important;
+		}
+
+		/* 검색 상품 목록의 상단 페이징 영역의 하단 여백 제거 */
+		#pagination-area-object-top ul { margin-bottom: 0px; }
+	</style>
+
+<!-- Breadcrumb -->
+	<nav class="mb-4" aria-label="breadcrumb" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);">
+		<ol class="breadcrumb fw-bold">
+			<li class="breadcrumb-item">재고관리</li>
+			<li class="breadcrumb-item active" aria-current="page">제품조회</li>
+		</ol>
+	</nav>
+
+<!-- Title Area -->
+	<div class="row justify-content-between w-auto">
+		<div class="col h4 fw-bold">
+			제품 조회
+			<!-- 모바일 사이즈(750 이하) 검색폼 영역 토글 버튼 -->
+			<button class="btn btn-sm btn-outline-secondary py-0 fw-normal" id="collape-form-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collape-form" aria-expanded="true">검색 도구</button>
+		</div>
+	</div> 
+
+<!-- Search Form Area -->
+	
+
+<!-- List Area -->
+	<div class="goods-object mx-0">
+		<div class="row">
+			<div class="col-12 col-md-7" id="barcode-list-container">
+			<input type="checkbox" class="btn-check" id="allCheckButton" autocomplete="off">
+				<label class="btn btn-primary btn-sm" for="allCheckButton">전체 선택</label>
+				<button type="button" id="selUpdateGoodsButton" class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="선택 상품의 정보를 디바이스마트에서 가져와 갱신합니다.<br /> 갱신항목 : 제품명, 짧은설명, 가격, 입고가, 제조사/매입처, 이미지">선택 갱신</button>
+				<button type="button" id="getNewGoodsButton" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="상품번호를 입력받아 재고관리에 없으면 재고상품으로 등록합니다.">디바 상품가져오기</button>
+				<div id="pagination-area-object-top"></div>
+				<table class="table table-bordered align-middle caption-top" id="barcode-list">
+				<caption class="position-relative"><상품 목록></caption>
+				<thead class="table-light">
+				<tr class="align-middle">
+					<th scope="col" class="text-center table-title-size" style="width:110px;">#</th>
+					<th scope="col" class="text-center table-title-size" style="width:auto;">상품명</th>
+					<th scope="col" style="width:110px;" class="text-center table-title-size">재고수량</th>
+					<th scope="col" style="width:214px" class="text-center table-title-size">재고위치</th>
+					<th scope="col" style="width:140px;" class="text-center table-title-size">제조사/매입처</th>
+				</tr>
+				</thead>
+				<tbody id="hb-target-goods-list-object">
+				</tbody>
+				</table>
+				<div id="pagination-area-object"></div>
+			</div>
+			<div class="col-12 col-md-5">
+				<div id="hb-target-option-object" class="movetop d-none" style="z-index:3;"></div>
+			</div>
+		</div>
+	</div>
+
+<!-- 입고가변동 보기 폼(Modal) -->
+	<div class="modal fade" id="pirce-history-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+		<div class="modal-dialog modal-fullscreen-md-down modal-lg modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header px-3">
+					<h5 class="modal-title">입고가변동현황</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body px-4" id="pirce-history-modal-body">
+					<!-- Chart Area -->
+					<div class="goods-object mx-0">
+						<div class="row mx-0" id="chartArea"><canvas id="priceHistoryChart"></canvas></div>
+					</div>				
+				</div>
+				<div class="modal-footer px-3">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+				</div>
+			</div>
+		</div>		
+	</div> 	
+	
+<!-- Goods Handlebars source -->
+	<script id="hb-source-goods-object" type="text/x-handlebars-template">
+		{{#each .}}
+			<tr data-goods="{{goodskey}}" onclick="DetailGoodsView(this);">
+				<td class="table-img text-center align-middle">
+					<!-- <div class="table-img">{{image_html image}}</div> -->
+					<div class="table-img">{{image_custom image}}</div>
+					<span class="subtitle">
+						<input type="checkbox" name="update_goods" value="{{link_goods_seq}}" class="updategoods">
+						<i class="fa-solid fa-chart-line text-underline-hover"></i>
+						<a class="text-underline-hover c-pointer importpricegrape" data-goodsseq="{{link_goods_seq}}">입고가</a>
+					</span>
+				</td>
+				<td class="goods-name position-relative">
+					[{{link_goods_seq}}]
+					{{goods_name}}
+					{{#checkIf option_state "==" "옵션상품"}}
+					<div class="fw-normal text-underline-hover">
+						<i class="fa-regular fa-rectangle-list"></i> 옵션상품
+					</div>
+					{{/checkIf}}
+				</td>
+				<td class="text-end px-2">
+					{{NumberComma total_stock}}
+				</td>
+				<td class="text-start ps-1">
+					<div class="sp1 py-1">
+						<span class="text-muted fw-bold">위치1)</span>
+						<span class="ps-2">{{nonehyphen sp1}}</span>
+					</div>
+					<div class="sp2 py-1">
+						<span class="text-muted fw-bold">위치2)</span>
+						<span class="ps-2">{{nonehyphen sp2}}</span>
+					</div>
+				</td>
+				<td class="text-start ps-1 align-middle">
+					<div class="py-1" title="제조사">
+						<i class="fa-solid fa-industry text-muted"></i> {{nonehyphen manufacture}}
+					</div>
+					<div class="py-1" title="매입처">
+						<i class="fa-solid fa-store text-muted"></i> {{nonehyphen purchase}}
+					</div>
+				</td>
+			</tr>
+		{{/each}}
+	</script>
+
+<!-- Option Handlebars source -->
+	<script id="hb-source-option-object" type="text/x-handlebars-template">
+		<div class="m-0 p-1 pb-2 position-relative" id="option-goods-name">
+			<div class="me-4 p-2 fs-6 fw-bold">
+				[{{goods_seq}}] {{goods_name}}
+			</div>
+			<button type="button" class="btn-close border border-danger position-absolute top-0 end-0 mt-2 me-2 text-danger"
+				aria-label="Close"
+				onclick="OptionViewClose()"
+				></button>
+		</div>
+		<div class="me-4 mt-1 mb-1 fs-6 fw-bold">
+			<div class="summary-text px-3 pt-1 fw-normal">{{summary}}</div>
+		</div>
+		<div class="row row-cols-auto mb-2 mx-0 pb-2 text-muted border-bottom">
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">입고가</span><span class="fw-bold">{{NumberComma supply_price}}</span>
+			</div>
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">총재고</span><span class="fw-bold">{{NumberComma total_stock}}</span>
+			</div>
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">재조사</span><span class="fw-bold">{{nonehyphen manufacture}}</span>
+			</div>
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">매입처</span><span class="fw-bold">{{nonehyphen purchase}}</span>
+			</div>
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">판매가</span><span class="fw-bold">{{NumberComma price}}</span>
+			</div>
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">MOQ</span><span class="fw-bold">{{min_purchase_ea}}</span>
+			</div>
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">MPQ</span><span class="fw-bold">{{min_purchase_ea_multiple}}</span>
+			</div>
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">등록</span><span class="fw-normal">{{reg_dt}}</span>
+			</div>
+			<div class="col-md-auto pb-1">
+				<span class="item-title px-1">수정</span><span class="fw-normal">{{upd_dt}}</span>
+			</div>
+		</div>
+		<ul class="nav nav-tabs" role="tablist">
+			<li class="nav-item" role="presentation">
+				<a class="nav-link active c-pointer info-text" id="nav-tab-option" data-goodskey="{{goodskey}}" data-bs-toggle="tab" data-bs-target="#hb-tab-option" aria-controls="hb-tab-option" aria-selected="true">
+				{{#checkIf option_state "==" "option"}}옵션{{else}}정보{{/checkIf}}
+				</a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link c-pointer info-text" id="nav-tab-slog" data-bs-toggle="tab" data-bs-target="#hb-tab-slog" aria-controls="hb-tab-slog" aria-selected="true">
+					재고수량기록
+				</a>
+			</li>			
+			<li class="nav-item" role="presentation">
+				<a class="nav-link c-pointer info-text" id="nav-tab-splog" data-bs-toggle="tab" data-bs-target="#hb-tab-splog" aria-controls="hb-tab-splog" aria-selected="true">
+					재고위치기록
+				</a>
+			</li>
+		</ul>
+		<div class="tableFixHead tab-content mt-1 rounded">
+			{{#checkIf option_state "==" "option"}}
+			<table class="table align-middle tab-pane active" id="hb-tab-option" role="tabpanel" aria-labelledby="nav-tab-option">
+				<thead>
+					<tr><th colspan={{olen}} class="text-center table-title-size">옵션</th></tr>
+					<tr>
+						{{#each options.0.otitles}}
+						<th style="width:{{../oper}}%">
+							{{this}}
+							<input id="op{{@index}}" style="width:95%;">
+						</th>
+						{{/each}}
+					</tr>
+				</thead>			
+				<tbody>
+					{{#each options}}
+					<tr>
+						{{#each onames}}
+						<td data-ogroup="{{@index}}" class="info-text">{{this}}</td>
+						{{/each}}
+					</tr>
+					<tr>
+						<td colspan="{{../olen}}" class="border-0 border-bottom border-2 text-muted">
+							{{#each sp}}
+							
+								{{#checkIf @index '>' 0}}<hr class="mx-2 my-1" style="background-color: #b9b9b9;">{{/checkIf}}
+								<div class="row mx-0">
+									<div class="col">수량 : {{NumberComma stock}}</div>
+									<div class="col">위치1 : {{nonehyphen sp1}}</div>
+									<div class="col">위치2 : {{nonehyphen sp2}}</div>
+								</div>
+								<div class="row mx-0">
+									<div class="col">입고가 : {{NumberComma ../supply_price}}</div>
+									<div class="col">판매가 : {{NumberComma ../price}}</div>
+									<div class="col">문의담당 : {{nonehyphen manager}}</div>
+								</div>
+							{{/each}}
+						</td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+			{{else}}
+			<table class="table info mb-0 align-middle tab-pane active" id="hb-tab-option" role="tabpanel" aria-labelledby="nav-tab-option">
+				<tbody>
+					{{#each options}}
+						{{#each sp}}
+							{{#checkIf @index '>' 0}}<hr class="mx-2 my-1" style="background-color: #b9b9b9;">{{/checkIf}}
+							<tr>
+								<th class="info-text-col-title border-end">수량</th><td class="info-text-value">{{NumberComma stock}}</td>
+							</tr>
+							<tr>
+								<th class="info-text-col-title border-end">위치1</th><td class="info-text-value">{{nonehyphen sp1}}</td>
+							</tr>
+							<tr>
+								<th class="info-text-col-title border-end">위치1</th><td class="info-text-value">{{nonehyphen sp2}}</td>
+							</tr>
+							<tr>
+								<th class="info-text-col-title border-end">입고가</th><td class="info-text-value">{{NumberComma ../supply_price}}</td>
+							</tr>
+							<tr>
+								<th class="info-text-col-title border-end">판매가</th><td class="info-text-value">{{NumberComma ../price}}</td>
+							</tr>
+							<tr>
+								<th class="info-text-col-title border-end">문의담당</th><td class="info-text-value">{{nonehyphen manager}}</td>
+							</tr>
+						{{/each}}
+					{{/each}}
+				</tbody>
+			</table>
+			{{/checkIf}}
+			<div class="tab-pane w-100" id="hb-tab-slog" role="tabpanel" aria-labelledby="nav-tab-slog">
+				<div class="py-0">
+					<ul class="list-group list-group-flush" id="hb-target-logstock"></ul>
+				</div>
+			</div>
+			<div class="tab-pane w-100" id="hb-tab-splog" role="tabpanel" aria-labelledby="nav-tab-splog">
+				<div class="py-0">
+					<ul class="list-group list-group-flush" id="hb-target-logplace"></ul>
+				</div>
+			</div>
+		</div>
+		<div class="m-0 py-1 text-center">
+			<button class="btn btn-light border p-2 w-100 fw-bold" onclick="OptionViewClose()">닫기</button>
+		</div>
+	</script>
+
+<!-- List Handlebars source -->
+	<script id="hb-source-logstock" type="text/x-handlebars-template">
+		{{#each data.list}}
+		<li class="list-group-item p-0 m-0"
+			data-page="{{../pageset.nowpage}}"
+			data-collapse="#collapseO{{stock_goods_seq}}"
+			data-stockseq="{{stock_goods_seq}}"
+			data-goods="{{link_goods_seq}}"
+			data-name="{{goods_name}}"
+			data-img="{{image}}"
+		>			
+			<div class="row m-0 py-2">
+				<div class="col text-muted">
+					# {{pagecounter @index ../data.pageset.nowpage ../data.pageset.perpage}}
+					{{#checkIf ../data.option_state "==" "option"}}
+					<span class="ps-3 fw-bold">
+						{{nonehyphen o_name}}
+					</span>
+					{{/checkIf}}
+				</div>
+			</div>
+			<div class="row row-cols-auto position-relative pb-3 m-0">
+				<div class="col-md-auto info-text">
+					{{stocklogtype stype stypename}}
+				</div>
+				<div class="col-md-auto info-text">
+					{{historystockstring note}}
+				</div>
+				<div class="col-md-auto position-absolute end-0 text-muted text-end">
+					{{log_dt}}
+				</div>
+			</div>
+		</li>
+		{{/each}}
+	</script>
+
+	<script id="hb-source-logplace" type="text/x-handlebars-template">
+		{{#each data.list}}
+		<li class="list-group-item p-0 m-0"
+			data-page="{{../pageset.nowpage}}"
+			data-collapse="#collapseO{{stock_goods_seq}}"
+			data-stockseq="{{stock_goods_seq}}"
+			data-goods="{{link_goods_seq}}"
+			data-name="{{goods_name}}"
+			data-img="{{image}}"
+		>			
+			<div class="row m-0 py-2">
+				<div class="col text-muted">
+					# {{pagecounter @index ../data.pageset.nowpage ../data.pageset.perpage}}
+					{{#checkIf ../data.option_state "==" "option"}}
+					<span class="ps-3 fw-bold">
+						{{nonehyphen o_name}}
+					</span>
+					{{/checkIf}}
+				</div>
+			</div>
+			<div class="row row-cols-auto position-relative pb-3 m-0">
+				<div class="col-md-auto info-text">
+					{{stockplacelogtype stype stypename}}
+				</div>
+				<div class="col-md-auto info-text">
+					{{historyplacestring chg_loc_name}}
+				</div>
+				<div class="col-md-auto position-absolute bottom-0 end-0 pt-1 text-muted text-end">
+					{{memberinfo}} {{log_dt}}
+				</div>
+			</div>
+		</li>
+		{{/each}}
+	</script>
+
+<!-- Script Area -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script type="text/javascript" src="/assets/Stock/stock.js?v=<?php echo date("YmdHis");?>"></script>
+	<script>
+		let GlobalGoods = {};									// 출고용 상품 데이터 취합
+		let goodsobjecttop = $(".goods-object").offset().top;	// 상품 상세보기 위치 지정용 기준값
+
+		/**
+		 * 최초 로드 후 최종 처리
+		 * 	※ 비동기 호출을 막기 위해 promise, async, await을 이용하는 함수를 호출하므로
+		 * 		ready() 인자 함수를 async 선언 함
+		 * @author yds@ntrex on 2023.05.03
+		 */
+		$(document).ready(async ()=>{
+			/* 일단 신규 상품 가져오기를 스케줄러로 돌렸기 때문에 버튼을 주석 처리 함 - yds@ntrex on 2023.11.22
+				// 신규등록 버튼 추가
+				let newbtn = $(' \
+					<div class="col"> \
+						<label for="search-goods" class="text-primary ps-2">&nbsp;</label> \
+						<button type="button" id="search-goods" class="btn btn-danger btn-sm form-control" onclick="MsgBox.Alert(\'준비중입니다.\');">신규등록</button> \
+					</div>');
+				$("#sea-form div.row").append(newbtn);
+			*/
+
+			// -------- Handlebars Helper ---------------------------
+			HB_StockManageHelperLoad();
+
+			//----- 테스트용도의 모든 상품 검색 처리 ------------------
+			// $("INPUT[name='s-goodsSeq']").val("1312084");
+			// $("INPUT[name='s-goodsSeq']").val("417");
+			// $("INPUT[name='s-goodsName']").val("엔클로져 박스 BC-AL");
+			// GetList(1);
+			//전체선택
+			$("#allCheckButton").on("click", function(){
+				if($(this).prop("checked")){
+					$(this).next().text("선택 해제");
+					$("input[name='update_goods").each(function(){
+						$(this).prop("checked", true);
+					});
+				}else{
+					$(this).next().text("전체 선택");
+					$("input[name='update_goods").each(function(){
+						$(this).prop("checked", false);
+					});
+				}
+			});
+			//선택갱신
+			$("#selUpdateGoodsButton").on("click", function(){
+				var goodsSeq = [];
+				$("input[name='update_goods").each(function(){
+					if($(this).prop("checked")){
+						goodsSeq.push($(this).val());
+					}
+				});
+				
+				if(goodsSeq.length > 0){
+					let result =  getAjax('/Stock/GoodsManageUpdate', {
+						'goodsSeq' : goodsSeq.join(),//417, //link_goods_seq,
+					});
+
+					result.then((resData) => {
+						if (resData.state != 1) {
+							CallCommonModal("통신 결과", resData.errors.message);
+						} else {
+							GetList(window.pageset.nowpage);
+						}
+					})		
+				}else{
+					MsgBox.Alert("상품을 선택하세요.");
+				}
+			});
+
+			// 디바이스마트 상품가져오기
+			$("#getNewGoodsButton").on("click", function(){
+				MsgBox.Prompt("디바이스마트 상품번호를 입력하세요.", "디바이스마트 상품번호", function(data){
+					if(data){
+						//console.log("result true", data)
+						let result = getAjax('/Stock/GManage_New_Goods_One_AsyncGet', {
+							'goodsSeq' : data,
+						});
+
+						result.then((resData) => {
+							//console.log(resData);
+							if (resData.state != 1) {
+								MsgBox.Alert(resData.data.error);
+							} else {
+								MsgBox.Alert("상품을 성공적으로 가져왔습니다.");
+								$("#sea-form").find("input[name='s-goodsSeq']").val(data);
+								GetList(1);
+								$("#sea-form").find("input[name='s-goodsSeq']").val("");
+								
+							}
+						});
+					} else {
+						//console.log("result false", data)
+					}
+				});
+			});
+
+			//tooltip 활성화
+			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+				return new bootstrap.Tooltip(tooltipTriggerEl)
+			})			
+		});	// End of Document Redy
+
+		Handlebars.registerHelper("stocklogtype", function (type, value) {
+			let html = ""; 
+			if (type == "0") {
+				html = "<span class='text-primary'>[{0}]</span>".format(value);
+			} else if (type == "1") {
+				html = "<span class='text-danger'>[{0}]</span>".format(value);
+			} else if (type == "2") {
+				html = "<span class='text-success'>[{0}]</span>".format(value);
+			}
+			return new Handlebars.SafeString(html);
+		});
+
+		Handlebars.registerHelper("stockplacelogtype", function (type, value) {
+			let html = ""; 
+			if (type == "a") {
+				html = "<span class='text-info'>[{0}]</span>".format(value);
+			} else if (type == "d") {
+				html = "<span class='text-danger'>[{0}]</span>".format(value);
+			} else if (type == "e") {
+				html = "<span class='text-success'>[{0}]</span>".format(value);
+			}
+			return new Handlebars.SafeString(html);
+		});
+		Handlebars.registerHelper("historystockstring", function (value) {
+			let returnstring = value.replace(/출고수량/g, '수량');
+			returnstring = returnstring.replace(/입고수량/g, '수량');
+			returnstring = returnstring.replace(/수정수량/g, '수량');
+			returnstring = returnstring.replace(/:/g, ' : ');
+			return new Handlebars.SafeString(returnstring);
+		});
+		Handlebars.registerHelper("historyplacestring", function (value) {
+			let returnstring = value.split(", (수량")[0];
+			// /returnstring = returnstring.replace(/:/g, ' : ');
+			return new Handlebars.SafeString(returnstring);
+		});
+
+		// Scroll에 따른 옵션 보기 위치 변경
+		$(window).scroll(function () {
+			OptionWindowPosition();
+		});	// End of Block : window.scroll
+
+		/**
+		 * 스크롤위치에 따른 대상 위치 재지정
+		 *  @autohr yds@ntrex on 2023.11.15
+		 */
+		function OptionWindowPosition() {
+			// 스크롤 기준
+			let wpt = $(window).scrollTop();
+			// 옵션 : position - fixed
+			//console.log("window.innerWidth", window.innerWidth);
+
+			let offset = $('#hb-target-option-object').closest("div.row").offset();
+			if ( wpt >= goodsobjecttop ) $('#hb-target-option-object').css("top", "2px");
+			else  $('#hb-target-option-object').css("top", (offset.top-wpt+34)+"px");
+		}	// End of Function : OptionWindowPosition
+
+
+		// Resize에 따른 옵션보기 사이즈 변경
+		$(".goods-object").on('resize', function(){
+			OptionWindowResize();
+		});	// End of Block :.goods-object resize
+
+		/**
+		 * Resize에 따른 대상 사이즈 재지정
+		 *  @autohr yds@ntrex on 2023.11.15
+		 */
+		function OptionWindowResize() {
+			// 사이즈 기준
+			let twidth = $(".goods-object").width();
+			$('#hb-target-option-object').css({"min-width":(twidth - 270)+"px", "width":(twidth - 270)+"px"});
+		}	// End of Function : OptionWindowResize
+
+		/**
+		 * 상품 출력에 필요한 코드 정보 가공
+		 * 	- 코드 정리 => {코드:코드명, ...} or {코드:{name:이름, id:아이디}, ...}
+		 * @author yds@ntrex on 2023.11.16
+		 * @param {object} data Ajax로 부터 받은 데이터
+		 */
+		function GoodsInfoCodes(data) {
+			// 코드 정리 => {코드:코드명, ...} or {코드:{name:이름, id:아이디}, ...}
+			let codes = {};
+			// 옵션 타이틀 코드
+			codes.title = data.opts_codes.option_titles.reduce((a, c)=>{ a[c.code] = c.name; return a; }, {});
+			// 옵션 코드
+			codes.option = data.opts_codes.options.reduce((a, c)=>{ a[c.code] = c.name; return a; }, {});
+			// 재고위치 코드
+			codes.sp = data.stocks_codes.reduce((a, c)=>{ a[c.code] = c.name; return a; }, {});
+			// 재고문의담당자 코드
+			codes.sm = data.stockmanagers.reduce((a, c)=>{ a[c.code] = c.name; return a; }, {});
+
+			// 로그용 처리 관리자 코드 : 로그가 없는 경우 전달 되지 않으므로 빈 값 처리 포함
+			codes.m = (data.member_codes != undefined)
+				? data.member_codes.reduce((a, c)=>{
+						a[c.code] = {"name":c.name, "id":c.id};
+						return a;
+					}, {})
+				: {}
+				;
+			return codes;
+		}	// End of Function : GoodsInfoCodes
+
+		/**
+		 * 상품 출력에 필요한 정보 가공
+		 * @author yds@ntrex on 2023.11.15
+		 * @param {object} c 상품 정보 (기본, 옵션, 재고 등)
+		 * @param {object} codes 가공한 코드 정보(옵션코드, 재고위치 코드 등)
+		 * @param {object} data Ajax로 부터 받은 데이터
+		 */
+		function GoodsInfoProcess(c, codes, data) {
+			let tmp = {};
+			if (!data.hasOwnProperty('opts')) {
+				tmp = {
+					"goodskey":c.stock_goods_seq,	// 상품의 Unique Key 지정
+					"link_goods_seq":c.link_goods_seq||c.goods_seq,
+					"stock_goods_seq":c.stock_goods_seq,
+					"goods_seq":c.goods_seq||c.link_goods_seq,
+					"goods_name":c.goods_name,
+					"summary":c.summary,
+					"supply_price":c.supply_price,
+					"price":c.price,
+					"min_purchase_ea":c.min_purchase_ea,
+					"max_purchase_ea":c.max_purchase_ea,
+					"min_purchase_ea_multiple":c.min_purchase_ea_multiple,
+					"manufacture":c.manufacture,
+					"purchase":c.purchase,
+					"image":c.image,
+					"total_stock":c.total_stock,
+					"option_state":c.option_state,
+					"sp1":c.sp_name_1,
+					"sp2":c.sp_name_2,
+					"stockmanager":c.stockmanager,
+					"reg_dt":c.reg_dt,
+					"upd_dt":c.upd_dt,
+					"options":[]
+				};
+			} else {
+				tmp = {
+					"goodskey":c.stock_goods_seq,	// 상품의 Unique Key 지정
+					"stock_goods_seq":c.stock_goods_seq,
+					"goods_seq":c.goods_seq,
+					"goods_name":c.goods_name,
+					"supply_price":c.supply_price,
+					"min_purchase_ea":c.min_purchase_ea,
+					"max_purchase_ea":c.max_purchase_ea,
+					"min_purchase_ea_multiple":c.min_purchase_ea_multiple,
+					"image":c.image,
+					"total_stock":c.total_stock,
+					"option_state":c.option_state,
+					"options":[],
+					"olen":1,
+					"oper":100,
+				};
+				// 옵션과 재고 정보 추가 - 추가로 필요한 항목은 return 항목에 요소 추가로 사용
+				if (c.option_state == "option") {
+					let odata = Object.values(data.opts.filter(o => o.stock_goods_seq === c.stock_goods_seq)).map((a)=>{
+						let otitles = [], onames = [];
+						for(let i=1; i<=5; i++) {
+							if (codes.title[a["otc"+i]] == "") continue;
+							otitles[i-1] = codes.title[a["otc"+i]];
+							onames[i-1] = codes.option[a["oc"+i]];
+						}
+						
+						let fstocks = Object.values(data.stocks.filter(s => s.stock_opt_seq == a.stock_opt_seq)).map((sa)=>{
+							sa.sp1 = codes.sp[sa.sp_code_1];	// 재고위치1 명칭
+							sa.sp2 = codes.sp[sa.sp_code_2];	// 재고위치2 명칭
+							sa.ospcode1 = sa.sp_code_1;
+							sa.ospcode2 = sa.sp_code_2;
+							sa.manager = codes.sm[sa.manager_code];	// 문의담당 이름
+							// 불필요 항목 삭제
+							["reg_dt","upd_dt","sp_code_1","sp_code_2","manager_code"].forEach(e => delete sa[e]);
+							return sa;
+						});
+
+						tmp.olen = otitles.length;
+						tmp.oper = parseInt(100 / otitles.length);
+						
+						return {
+							"stock_opt_seq":Number(a.stock_opt_seq),
+							"otitles":otitles,
+							"onames":onames,
+							"sp":fstocks,
+							"price":a.price,
+							"supply_price":a.supply_price
+						};
+					});
+					
+					tmp.options = odata;
+
+				} else {
+					let fstocks = Object.values(data.stocks.filter(s => s.stock_goods_seq == c.stock_goods_seq)).map((sa)=>{
+							sa.sp1 = codes.sp[sa.sp_code_1];	// 재고위치1 명칭
+							sa.sp2 = codes.sp[sa.sp_code_2];	// 재고위치2 명칭
+							sa.ospcode1 = sa.sp_code_1;
+							sa.ospcode2 = sa.sp_code_2;
+							sa.manager = codes.sm[sa.manager_code];	// 문의담당 이름
+							// 불필요 항목 삭제
+							["reg_dt","upd_dt","sp_code_1","sp_code_2","manager_code"].forEach(e => delete sa[e]);
+							return sa;
+						});
+	
+					tmp.options = [{"stock_opt_seq":0, "otitles":[], "onames":[], "olen":0, "sp":fstocks, "price":c.price, "supply_price":c.supply_price}];
+				}
+			}
+
+			return tmp;
+		}	// End of Function : GoodsInfo
+
+		/**
+		 * 전역변수로 등록된 상품 정보 가져오기
+		 * @author yds@ntrex on 2023.11.16
+		 * @param {string} goodskey 상품키
+		 * @param {string} stock_opt_seq 옵션번호
+		 * @param {string} stock_seq 재고번호
+		 */
+		function GetGloalGoodsInfo(goodskey, stock_opt_seq, stock_seq) {
+			let goods = GlobalGoods[goodskey];
+			// console.log("GetGloalGoodsInfo:",goods);
+			stock_opt_seq = stock_opt_seq||goods.selectoption;
+			stock_seq = stock_seq||goods.selectstock;
+			let options = goods.options.find(o => o.stock_opt_seq == stock_opt_seq);
+			let stocks = options.sp.find(s => s.stock_seq == stock_seq);
+
+			return [goods, options, stocks];
+		}	// End of Function : GetGloalGoodsInfo
+		
+		/**
+		 * 리스트 가져오기
+		 * @author yds@ntrex on 2023.06.08
+		 * @param {integer} page 페이지 번호
+		 */
+		async function GetList(page) {
+			GlobalGoods = {};
+
+			// 페이지 번호 획득
+			let data = {"page":(page == undefined?1:page), "offset":30};
+			// 총 레코드 개수 획득
+			if (page > 1) data.totalcount = window.pageset.totalcount;
+
+			// ---- 검색 조건 처리 ----------------
+			let alldata = $("#sea-form").serializeObject();	// 폼의 모든 항목을 Object로 반환 받기
+
+			// 검색에 필요한 항목 추리기
+			data["where"] = Object.keys(alldata).reduce((a, key)=>{
+				// 's-' 를 포함하는 항목만 선택 : 코드 검색이 붙는 경우 'dp-', 'keyword-' 시작하는 항목이 추가로 붙기 때문
+				let confirmkey = key.split("s-");
+				if (confirmkey.length == 2) a[confirmkey[1]] = alldata[key];
+				return a;
+			}, {});
+
+            // 재고위치1,2의 위치명 like 검색 지원을 위해 추가 항목 정의
+            likesp1 = $("input[data-group='code-search'][data-type='spcode1']").val();
+            likesp2 = $("input[data-group='code-search'][data-type='spcode2']").val();
+            hidesp1 = $("input[type=hidden][name='s-spcode1']");
+            hidesp2 = $("input[type=hidden][name='s-spcode2']");
+            // console.log("likesp1:{0}, likesp2:{1}, hidesp1:{2}, hidesp2:{3}".format(likesp1, likesp2, hidesp1.val(), hidesp2.val()));
+            // console.log("sp1cname:{0}, sp2cname:{1}".format(hidesp1.data("cname"), hidesp2.data("cname")), likesp1 != hidesp1.data("cname"), likesp2 != hidesp2.data("cname"));
+            if (likesp1 || likesp2) {
+                data['likesp'] = {"sp1":"" ,"sp2":""};
+                if (likesp1 != "" && likesp1 != hidesp1.data("cname")) {
+                    if (likesp1.length < 2) {
+                        MsgBox.Alert("재고위치1은 최소 2글자부터 검색 가능 합니다.");
+                        return true;
+                    }
+                    data["likesp"]["sp1"] = likesp1;
+                    data["where"]["spcode1"] = "";  // 지정했던 코드 비우기
+                }
+                if (likesp1 != "" && likesp2 != hidesp2.data("cname")) {
+                    if (likesp2.length < 2) {
+                        MsgBox.Alert("재고위치2은 최소 2글자부터 검색 가능 합니다.");
+                        return true;
+                    }
+                    data["likesp"]["sp2"] = likesp2;
+                    data["where"]["spcode2"] = "";  // 지정했던 코드 비우기
+                }
+            }
+			// console.log(data)
+
+			// 스크롤 상위로 이동 Page 이동 처리시 스크롤이 그대로 멈추어 있어 영역 숨기고 내용 비우고 최상위로 이동 시킴			
+			$("#hb-target-goods-list-object").hide().empty();
+			var def = new $.Deferred();
+			$('html').animate({scrollTop:0}, 0, 'swing', async ()=>{ def.resolve(true); });
+
+			// 서버통신 결과 받기
+			let rdata = await new Promise((resolve, reject)=>{
+				$.ajax({
+					url: '/Stock/GManage_List_AsyncGet', // 요청 할 주소
+					async: true, // false 일 경우 동기 요청으로 변경
+					type: 'POST',
+					data: data, // 전송할 데이터
+					dataType: 'json', // xml, json, script, html
+					success: function(resData) {
+						//console.log("===== AJAX Success ==============");
+						//console.log(resData);
+						if (resData.state == 1) {
+							resolve({state:1, data:resData.data});
+						} else {
+							resolve({state:-1, title:"목록 가져오기 실패", message:"목록 획득 실패, 계속 반복되는 경우 관리자에게 문의해주세요.<br>"+AjaxErrorMessage(resData)})
+						}
+					},
+					error: function(resData) {
+						console.log("===== AJAX Fail ==============");
+						console.log(resData);
+						//CallCommonModal("목록 가져오기 실패", AjaxErrorMessage(resData));
+						resolve({state:-1, title:"목록 가져오기 실패", message:AjaxErrorMessage(resData)})
+					}
+				});	// End of Ajax
+			});	// End of Promise : rdata
+
+			// 조회 실패 메시지 출력 및 종료
+			if (rdata.state !== 1) {
+				CallCommonModal(rdata.title, rdata.message);
+				return true;
+			}
+
+
+			// 페이지처리를 위한 전역변수에 담기
+			window.pageset = rdata.data.pageset;
+
+			// 화면 출력 - 바코드검색 결과도 같이 사용할 수단으로 함수로 뺌
+			DrawList(rdata.data);
+			
+		}	// End of Function : GetList
+
+		/**
+		 * 상품 목록 출력 - 위치 조정에 맞는 함수 재선언
+		 * 	- V_COM_StockSearchForm_UI2.php 에 정의된 형식은 사용하되 출력 내용이 달라지므로 재선언하여 사용
+		 * @autohr yds@ntrex on 2023.11.14
+		 * @param {object} data 통신 결과 값
+		 */
+		async function DrawList(data) {
+			// 데이터를 못 받은 경우 메시지 띄우고 종료
+			if (data.list.length == 0) {
+				hbs("hb-source-goods-object", [], "hb-target-goods-list-object", true, ()=>{
+					OptionViewClose();
+					MsgBox.Alert("검색된 상품이 없습니다.");
+				});
+				return true;
+			}
+
+			// 출력 Data 편집 - 우선 상품의 출고 기본정보 지정
+			let outdata = data.list.reduce((a, c)=>{
+				let tmp = GoodsInfoProcess(c, {}, data);	// 출력용 가공 정보 가져오기
+				GlobalGoods[tmp.goodskey] = tmp;			// 전역 변수에 해당 상품 업데이트
+				a.push(tmp);								// 반환 값으로 추가
+				return a;
+			}, []);
+
+			// 화면 출력 - 약속된 처리 끝날때까지 대기
+			await new Promise((resolve, reject)=>{
+				$("#hb-target-goods-list-object .list-select-goods").removeClass("list-select-goods");
+				OptionViewClose();	// 옵션 보기 닫기
+				hbs("hb-source-goods-object", outdata, "hb-target-goods-list-object", true, ()=>{
+					//ImgModalImageChange();	// 이미지 모달 이벤트 추가
+
+					// 이미지 모달 이벤트 추가
+					$("#hb-target-goods-list-object .table-img img").on("click", (e)=>{
+						e.stopPropagation();
+						let myModalEl = document.querySelector('#imgModal')
+						let modal = bootstrap.Modal.getOrCreateInstance(myModalEl)
+						let src = $(event.currentTarget).attr("src");
+						//console.log(event.currentTarget, src, $(modal._element).find("img"))
+						$(modal._element).find("img").attr("src", src);
+						modal.show()
+					})
+
+					// 입고가 Click 이벤트
+					$("#hb-target-goods-list-object td a.importpricegrape").on("click", (e)=>{
+						e.stopPropagation();
+						let goodsseq = $(e.currentTarget).data('goodsseq');
+						GetPriceHistory(goodsseq, '0');
+					})
+
+					// checkbox 선택시 상품 정보불러오는 처리가 동작해서 해당 이벤트 삭제를 위해 추가
+					$("#hb-target-goods-list-object td input:checkbox.updategoods").on("click", (e)=>{
+						e.stopPropagation();
+					})
+
+					// 하단 페이징 처리
+					let pagination_top = SetPagination(data.pageset, GetList);
+					let pagination = SetPagination(data.pageset, GetList);
+					$("#pagination-area-object-top").empty().append(pagination_top);
+					$("#pagination-area-object").empty().append(pagination);
+					
+
+					// 간략설명 click
+					$(".summary-text").on("click", (e)=>{
+						e.stopPropagation();
+						$(e.currentTarget).toggleClass('text-truncate');
+					});
+
+					// 옵션이 열렸던 적이 있고 1분이내 진입이라면 처리 안하므로 내용을 비움
+					$("#hb-target-option-object").empty();
+
+					$("#hb-target-goods-list-object").show();
+
+					// 완료 처리를 위한 resolve 호출
+					resolve(true);
+				});	
+			});	// End of Promise : 화면 출력
+			
+		}	// End of Function : DrawGoods
+
+		/**
+		 * 상품 상세 보기
+		 * @author yds@ntrex on 2023.11.20
+		 * @param {object} obj 이벤트 대상
+		 */
+		async function DetailGoodsView(obj) {
+			OptionWindowResize()
+			let goodskey = $(obj).data("goods");
+
+			// 창 보이기
+			OptionWindowPosition();
+			$("#hb-target-option-object").removeClass('d-none');
+
+			// 상품목록에서 색반전 시키기
+			$("#hb-target-goods-list-object .list-select-goods").removeClass("list-select-goods");
+			$("[data-goods='{0}']".format(goodskey)).addClass('list-select-goods');
+
+			let cdate = new Date();
+
+			// 이미 정보롤 갖고 있고 같은 상품으로 1분이네 진입하면 예외 처리
+			if ($("#hb-target-option-object").children().length > 0) {
+				let gdate = new Date($("#hb-target-option-object").data("regtime"));
+				let difftime = (cdate.getTime() - gdate.getTime()) / (1 * 1000);
+				if (
+					$("#hb-target-option-object").data("goodskey") == goodskey
+					&& difftime < 60 // 60초 이네 진입
+				) return true;
+			}
+
+			// 내용을 비우고 시작
+			$("#hb-target-option-object").data({"goodskey":goodskey, "regtime":+cdate}).empty();
+
+			let data = await new Promise((resolve, reject)=>{
+				// 서버통신
+				$.ajax({
+					url: '/Stock/GDetail_DP_AsyncGet', // 요청 할 주소
+					async: true, // false 일 경우 동기 요청으로 변경
+					type: 'POST',
+					data: {"stock_goods_seq":goodskey, "htmlstate":"aleadyload"}, // 전송할 데이터
+					dataType: 'json', // xml, json, script, html
+					success: function(resData, textStatus, jqXHR) {
+						//console.log("===== AJAX Success ==============");
+						//console.log(resData);
+						if (resData.state == 1) {
+							resolve(resData.data);
+						} else {
+							CallCommonModal("목록 가져오기 실패", "목록 획득 실패, 계속 반복되는 경우 관리자에게 문의해주세요.");
+							resolve(false);
+						}
+					},
+					error: function(resData, textStatus, error) {
+						console.log("===== AJAX Fail ==============");
+						console.log(resData, error);
+						CallCommonModal("목록 가져오기 실패", AjaxErrorMessage(resData));
+						resolve(false);
+					}
+				});	// End of Ajax
+			});	// End of Promise
+
+			if (data == false) return true;
+
+			// 출력 데이터 가공
+			let codes = GoodsInfoCodes(data);	// 코드 정리 => {코드:코드명, ...} or {코드:{name:이름, id:아이디}, ...}
+			let outdata = GoodsInfoProcess(data.goods, codes, data);	// 출력 데이터로 가공
+			if (GlobalGoods.hasOwnProperty(goodskey)) GlobalGoods[goodskey] = $.extend(true, GlobalGoods[goodskey], outdata);	// 기존 상품정보에 업데이트
+			delete codes;
+			delete outdata;
+
+			// 화면 출력
+			await new Promise((resolve, reject)=>{
+				hbs("hb-source-option-object", GlobalGoods[goodskey], "hb-target-option-object", true, async ()=>{
+					// 옵션 Input에 autocomplete 이벤트 추가
+					for(let i=0; i<GlobalGoods[goodskey].olen; i++) SetOptionAutocomplete(i, GlobalGoods[goodskey].olen);
+					
+					// 탭 메뉴중 로그 첫 호출 처리 추가
+					let tabEl = $('#hb-target-option-object a[data-bs-toggle="tab"]');
+					tabEl.on('show.bs.tab', async (event) => {
+						// event.target // newly activated tab
+						// event.relatedTarget // previous active tab
+						let navtab = $(event.target);			// 선택된 탭메뉴 - object
+						let target = navtab.data("bsTarget");	// 탭메뉴 목적지 - string
+
+						// 선택된 탭메뉴 구분을 옵션 텝메뉴에 지정
+						if (navtab.attr("id") == "nav-tab-slog") $("#nav-tab-option").data("logtype", "stock-all");
+						else if (navtab.attr("id") == "nav-tab-splog") $("#nav-tab-option").data("logtype", "place");
+
+						// 로그(수량, 위치) 탭 목적지 영역에 서버연결 예외 처리
+						if (navtab.attr("id") != "nav-tab-option" && $(target).find("ul[id^='hb-target-log'] li").length == 0) {
+							await GetLogList(1);	// 서버의 목록 획득
+						}
+					})
+
+					// 완료 처리를 위한 resolve 호출
+					resolve(true);
+				});	// End of hbs : hb-target-option-object
+			});	// End of Promise : 화면 출력
+		}	// End of Function : DetailGoodsView
+
+		/**
+		 * 
+		 */
+
+		function SetOptionAutocomplete(ogroup, maxogroup) {
+			let options = [];
+			// 중복없는 옵션 목록 생성
+			options = $("#hb-tab-option tbody tr[class!='d-none'] td[data-ogroup={0}]".format(ogroup))
+				.get()	
+				.map((o)=>{ return $(o).text(); })
+				.reduce((a, c)=>{ return a.includes(c) ? a : [...a, c]; }, [])
+				;
+			options.unshift("전체");
+			// autocomplete 구현 시작부
+			if ($("input#op{0}".format(ogroup)).hasClass('ui-autocomplete-input')) $("input#op{0}".format(ogroup)).autocomplete("destroy");
+			$("input#op{0}".format(ogroup)).autocomplete({
+				source : options, //source 는 자동완성의 대상
+				// item 선택 시 이벤트
+				select : function(event, ui) {
+					$(this).blur();
+					//console.log(ui.item);
+					// 선택값을 Input 값 반영전에 아래 처리가 일어나는 경우를 위해 미리 반영 처리
+					$("#hb-tab-option #op{0}".format(ogroup)).val(ui.item.value);
+					// 첫 번째와 그 이후의 것 구분 처리
+					if (ogroup == 0) {
+						// 모든 TR에 대해서 처리
+						$("#hb-tab-option tbody tr td[data-ogroup={0}]".format(ogroup)).each((idx, r)=>{
+							let otarget = $(r).closest("tr");
+							let visibles = new Array(maxogroup).fill("show");
+							if (ui.item.value != "전체") {
+								visibles[0] = ($(r).text() != ui.item.value)?"hide":"show";
+							} else {
+								visibles[0] = "show";
+							}
+							otarget.attr("visibles", JSON.stringify(visibles));
+							if (visibles.indexOf('hide') == -1) {
+								otarget.removeClass("d-none");
+								otarget.next().removeClass("d-none");
+							} else {
+								otarget.addClass("d-none");
+								otarget.next().addClass("d-none");
+							}
+						});
+					} else {
+						// 이전 data 지정값이 "show"인 TR에 대해서 처리
+						$("#hb-tab-option tbody tr td[data-ogroup={0}]".format(ogroup)).each((idx, r)=>{
+							let otarget = $(r).closest("tr");
+							let visibles;
+							if (otarget[0].hasAttribute('visibles')) {
+								visibles = JSON.parse(otarget.attr("visibles"));
+							} else {
+								visibles = new Array(maxogroup).fill("show");
+							}
+							if (ui.item.value != "전체") {
+								visibles[ogroup] = ($(r).text() != ui.item.value)?"hide":"show";
+							} else {
+								visibles[ogroup] = "show";
+							}
+							if (ogroup + 1 < maxogroup) {
+								for(let oi=ogroup + 1; oi<maxogroup; oi++) visibles[oi] = 'show';
+							}
+							otarget.attr("visibles", JSON.stringify(visibles));
+							if (visibles.indexOf('hide') == -1) {
+								otarget.removeClass("d-none");
+								otarget.next().removeClass("d-none");
+							} else {
+								otarget.addClass("d-none");
+								otarget.next().addClass("d-none");
+							}
+						});
+
+					}
+					
+					// 다음 옵션이 존재 하면 새로 지정하고 input 값 비우기
+					if (ogroup + 1 < maxogroup) {
+						for(let oi=ogroup + 1; oi<maxogroup; oi++) {
+							// SetOptionAutocomplete(oi, maxogroup);
+							// 중복없는 옵션 목록 생성
+							let newoptions = $("#hb-tab-option tbody tr[class!='d-none'] td[data-ogroup={0}]".format(oi))
+								.get()	
+								.map((o)=>{ return $(o).text(); })
+								.reduce((a, c)=>{ return a.includes(c) ? a : [...a, c]; }, [])
+								;
+							$("input#op{0}".format(oi)).autocomplete("option", { source: newoptions });
+							$("#op{0}".format(oi)).val("");
+						}
+					}
+				},
+				// 포커스 시 이벤트
+				focus : function(event, ui) { return false; },
+				minLength : 0, // 최소 글자 수
+				autoFocus : false, // true로 설정 시 메뉴가 표시 될 때, 첫 번째 항목에 자동으로 초점이 맞춰짐
+				// 위젯 요소에 추가 할 클래스를 지정
+				classes : {	'ui-autocomplete' : 'highlight' },
+				delay : 400, // 입력창에 글자가 써지고 나서 autocomplete 이벤트 발생될 떄 까지 지연 시간(ms)
+				disable : false, // 해당 값 true 시, 자동완성 기능 꺼짐
+				position : { my : 'right top', at : 'right bottom'}, // 제안 메뉴의 위치를 식별
+				// 자동완성 창 닫아질 때의 이벤트
+				close : function(event) { }
+			}).on("focus", function () {
+				$(this).autocomplete("search", "");
+			});
+		}
+
+		/**
+		 * 옵션 출력 영역에서 닫기 버튼 처리
+		 * @author yds@ntrex on 2023.11.03
+		 */
+		function OptionViewClose() {
+			// 창 숨기기
+			$("#hb-target-option-object").addClass('d-none');
+			$("#hb-target-goods-list-object .list-select-goods").removeClass("list-select-goods");
+			//$("#hb-target-option-object").empty();
+		}	// End of Function : OptionViewClose
+
+		/**
+		 * 기록 가져오기
+		 * @author yds@ntrex on 2023.08.21
+		 * @param {integer} page 페이지 번호
+		 */
+		async function GetLogList(page) {
+			// 페이지 번호 획득
+			let data = {"page":(page == undefined?1:page), "offset":10, "goodsSeq":"", "type":""};
+
+			// 재고 상품번호 가져오기
+			data.goodsSeq = $("#nav-tab-option").data("goodskey");
+			data.type = $("#nav-tab-option").data("logtype");
+			if (page > 1) {
+				if (data.type != "place") {
+					data.totalcount = window.stockpageset.totalcount || 0;
+				} else {
+					data.totalcount = window.placepageset.totalcount || 0;
+				}
+			}
+			
+			// 서버통신 결과 받기
+			let rdata = await new Promise((resolve, reject)=>{
+				$.ajax({
+					url: '/Stock/Gmanage_log_list_AsyncGet', // 요청 할 주소
+					async: true, // false 일 경우 동기 요청으로 변경
+					type: 'POST',
+					data: data, // 전송할 데이터
+					dataType: 'json', // xml, json, script, html
+					success: function(resData) {
+						// console.log("===== AJAX Success ==============");
+						// console.log(resData);
+						if (resData.state == 1) {
+							resolve({state:1, data:resData.data});
+						} else {
+							resolve({state:-1, title:"목록 가져오기 실패", message:"목록 획득 실패, 계속 반복되는 경우 관리자에게 문의해주세요.<br>"+AjaxErrorMessage(resData)})
+						}
+					},
+					error: function(resData) {
+						console.log("===== AJAX Fail ==============");
+						console.log(resData);
+						//CallCommonModal("목록 가져오기 실패", );
+						resolve({state:-1, title:"목록 가져오기 실패", message:AjaxErrorMessage(resData)})
+					}
+				});	// End of Ajax
+			});
+
+			// 조회 실패 메시지 출력 및 종료
+			if (rdata.state !== 1) {
+				CallCommonModal(rdata.title, rdata.message);
+				return true;
+			}
+			// 기존 페이지 번호 가져오던걸 그냥 셋트로 받게 처리 - yds@ntrex on 2024.12.03
+			if (data.type != "place") {
+				if (rdata.data.stock.list.length > 0) window.stockpageset = rdata.data.stock.pageset;
+				else window.stockpageset = null;
+			} else {
+				if (rdata.data.place.list.length > 0) window.placepageset = rdata.data.place.pageset;
+				else window.placepageset =  null;
+			}
+
+			// 화면 출력 - 바코드검색 결과도 같이 사용할 수단으로 함수로 뺌
+			//return (data.type != "place") ? rdata.data.stock : rdata.data.place;
+			
+			return await DrawLogList(rdata.data, data);
+
+
+		}	// End of Function : GetLogList
+
+		async function DrawLogList(rdata, data) {
+			// console.log("DrawLogList:", rdata, data);
+			$(".tableFixHead").scrollTop(0);	// 스크롤 상위로 이동 Page 이동 처리시 스크롤이 그대로 멈추어 있다.
+			if (data.type != "place") {
+				// 재고 수량 기록 출력
+				if (rdata.stock.hasOwnProperty("list") && rdata.stock.list.length > 0) {
+					$.each(rdata.stock.list, (i, lrow)=>{
+						switch(lrow.stype) {
+							case "0": lrow.stypename = "입고"; break;
+							case "1": lrow.stypename = "출고"; break;
+							case "2": lrow.stypename = "수량조정"; break;
+							default: lrow.stypename = "-"; break;
+						}
+						lrow.memberinfo = rdata.stock.members[lrow.member_seq];
+
+						// note 파싱하여 변동 최종값에 색 반영
+						lrow.note = lrow.note.split(" | ").reduce((a, c)=>{
+							//console.log(lrow.note, c);
+							let r = c.split(" : ");
+							if (["재고변동", "입고가변동"].indexOf(r[0]) !== -1) {
+								let t = r[1].split(" → ");
+								t[1] = "<span class='text-danger fw-bold'>{0}</span>".format(t[1]);
+								r[1] = t.join(" <i class='fa-solid fa-arrow-right'></i> ");
+							}
+							a.push(r.join(" : "));
+							return a;
+						}, []).join(" | ");
+					});
+					rdata.stock.option_state = rdata.stock.list[0].stock_opt_seq > 0 ? "option" : "normal";
+					// 조회 결과 화면 출력
+					hbs("hb-source-logstock", {"data":rdata.stock}, "hb-target-logstock", true, async ()=>{
+						await new Promise((resolve, reject)=>{
+							// 이미지 팝업용 모달 이벤트 : 화면 출력 전 이미지 교체 지정 실행
+							ImgModalImageChange();
+		
+							// Pagination
+							$("#hb-target-logstock").append("<li class='list-group-item p-3 d-flex justify-content-center'><div id='pagination-stock'></div></li>");
+							let pagination = SetPagination(window.stockpageset, GetLogList);
+							$("#pagination-stock").empty().append(pagination);
+							resolve(true);
+						});
+					});
+				} else {
+					if (data.page == 1 || $("a.nav-link.active").attr("id") == "hb-target-logstock-nav") {
+						$("#hb-target-logstock").empty().append("<li class='list-group-item fs-6'>'재고 수량' 기록이 없습니다.</li>");
+					}
+				}
+			} else {
+				if (rdata.place.hasOwnProperty("list") && rdata.place.list.length > 0) {
+					$.each(rdata.place.list, (i, lrow)=>{
+						switch(lrow.stype) {
+							case "e": lrow.stypename = "변경"; break;
+							case "a": lrow.stypename = "추가"; break;
+							case "d": lrow.stypename = "삭제"; break;
+							default: lrow.stypename = "-"; break;
+						}
+						lrow.memberinfo = rdata.place.members[lrow.member_seq];
+
+						if (lrow.stype == "e") {
+							let chglog = lrow.chg_loc_name.split(", (위치2)");
+							chglog[0] = chglog[0].split(" → ");
+							chglog[0][1] = "<span class='text-danger fw-bold'>{0}</span>".format(chglog[0][1]);
+							chglog[1] = chglog[1].split(" → ");
+							chglog[1][1] = "<span class='text-danger fw-bold'>{0}</span>".format(chglog[1][1]);
+
+							chglog[0] = chglog[0].join(" → ");
+							chglog[1] = chglog[1].join(" → ");	
+	
+							lrow.chg_loc_name = chglog.join(", (위치2)").replace(/→/gi, "<i class='fa-solid fa-arrow-right'></i>");
+						}
+					});
+					rdata.place.option_state = rdata.place.list[0].stock_opt_seq > 0 ? "option" : "normal";
+					// 조회 결과 화면 출력
+					hbs("hb-source-logplace", {"data":rdata.place}, "hb-target-logplace", true, async ()=>{
+						await new Promise((resolve, reject)=>{
+							// 이미지 팝업용 모달 이벤트 : 화면 출력 전 이미지 교체 지정 실행
+							ImgModalImageChange();
+
+							// Pagination
+							$("#hb-target-logplace").append("<li class='list-group-item p-3 d-flex justify-content-center'><div id='pagination-place'></div></li>");
+							let pagination = SetPagination(window.placepageset, GetLogList);
+							$("#pagination-place").empty().append(pagination);
+							resolve(true);
+						});
+					});
+				} else {
+					if (data.page == 1 || $("a.nav-link.active").attr("id") == "hb-target-logplace-nav") {
+						$("#hb-target-logplace").empty().append("<li class='list-group-item fs-6'>'재고 위치' 기록이 없습니다.</li>");
+					}
+				}
+			}
+
+			return true;
+		}	// End of Function : DrawLogList
+
+	</script>

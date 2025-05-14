@@ -1,0 +1,104 @@
+{% extends 'empty_base.html' %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center m-auto" style="height: calc(100% - var(--footer--min-height)); max-width:550px">
+	<div class="card mb-3 justify-content-center">
+		<div class="card-header justify-content-center text-center">
+			<img src="/assets/image/logo.png" class="logo"/>
+		</div>
+		<div class="card-body m-3 needs-validation">
+			<h5 class="card-title text-primary">
+				<i class="fa-solid fa-user"></i>
+				Sign in
+			</h5>
+			<div class="form-floating mb-2 form_custom">
+				<input type="text" class="form-control input_custom" id="id" placeholder="ID" required>
+				<label for="id" class="form-label fw-bold">ID</label>
+				<div class="invalid-feedback">
+					* 필수 항목입니다.
+				</div>
+			</div>
+			<div class="form-floating mb-2 form_custom">
+				<input type="password" class="form-control input_custom" id="pw" placeholder="Password" required>
+				<label for="pw" class="form-label fw-bold">PW</label>
+				<div class="invalid-feedback">
+					* 필수 항목입니다.
+				</div>
+			</div>
+			<div class="col-12">
+				<button type="button" id="sign_in"  class="btn btn-primary">Sign in</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	// 로그인
+	$("#sign_in").on("click", function(event) {
+		// inpux box용 validate class 추가
+		$(".needs-validation").addClass("was-validated");
+		// 입력 사항 체크
+		let validationChk = true;
+		$.each($('.needs-validation input'), function(index, form) {
+			if (!form.checkValidity()) {
+				validationChk = false;
+				return false;
+			}
+		});
+		// 입력 사항 체크 결과 실패면 중지
+		if (!validationChk) return false;
+
+		// validation 문제 없으면 통신 시도
+		let data = {
+			id:$("#id").val(),
+			pw:$("#pw").val()
+		}
+
+        let csrftoken = Cookies.get('csrftoken');
+		//console.log(data);
+		$.ajax({
+			url: "{% url 'members:login_proc' %}", // 요청 할 주소
+			async: true, // false 일 경우 동기 요청으로 변경
+            headers: { "X-CSRFToken": csrftoken },
+			type: 'POST',
+			data: data, // 전송할 데이터
+			dataType: 'json', // xml, json, script, html
+			success: function(resData) {
+				// console.log("===== AJAX Success ==============");
+				// console.log(resData);
+				if (resData.state == 1) {
+					location.href = "/";
+				} else {
+					$(".needs-validation").removeClass("was-validated");
+					$("#pw").val('');
+					CallCommonModal("로그인 에러", resData.data.error);
+				}
+			},
+			error: function(resData) {
+				console.log("===== AJAX Fail ==============");
+				console.log(resData);
+				CallCommonModal("로그인 에러", "");
+			}
+		});	// End of Ajax
+	});
+
+	$(document).ready(function() {
+		// id 에서 엔터키 사용
+		$("#id").off("keydown").on("keydown", function(e) {
+			e.stopPropagation();
+			e.stopImmediatePropagation();
+			if (e.keyCode === 13) {
+				$("#pw").focus();
+			}
+		});
+		// 패스워드 에서 엔터키 사용
+		$("#pw").off("keydown").on("keydown",function(e) {
+			e.stopPropagation();
+			e.stopImmediatePropagation();
+			if (e.keyCode === 13) {
+				$("#sign_in").click();
+			}
+		});
+
+	});
+</script>
+{% endblock %} 
