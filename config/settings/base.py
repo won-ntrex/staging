@@ -59,10 +59,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'common.middleware.LoginRequiredMiddleware',  # 커스텀 미들웨어 추가 - 사이트 전체에 로그인후에  사용 가능하도록 하기 위함.
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'common.middleware.RequestLoggingMiddleware', # 커스텀 미들웨어 추가 - 로그 처리
 ]
 
 # 내부 IP 설정
-#INTERNAL_IPS = ['127.0.0.1']
+INTERNAL_IPS = ['127.0.0.1']
 
 ROOT_URLCONF = 'config.urls'
 

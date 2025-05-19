@@ -23,3 +23,38 @@ class LoginRequiredMiddleware:
         if not request.session.get('login_user') and not any(path.startswith(url) for url in EXEMPT_URLS):
             return redirect(settings.LOGIN_URL)
         return self.get_response(request)
+
+
+import logging
+from django.utils.deprecation import MiddlewareMixin
+
+logger = logging.getLogger('common')
+
+class RequestLoggingMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        user = request.user.username if request.user.is_authenticated else 'Anonymous'
+
+        ip = self.get_client_ip(request)
+        user_agent = request.META.get('HTTP_USER_AGENT', '-')
+        referer = request.META.get('HTTP_REFERER', '-')
+
+        logger.info(
+            f"[REQUEST] {request.method} {request.path} by {user} | IP: {ip} | Agent: {user_agent} | Referer: {referer}"
+        )
+
+    def process_response(self, request, response):
+        logger.info(f"[RESPONSE] {request.method} {request.path} - {response.status_code}")
+        return response
+
+    def process_exception(self, request, exception):
+        logger.error(f"[EXCEPTION] {request.path} - {str(exception)}")
+        return None
+
+    def get_client_ip(self, request):
+        """ X-Forwarded-For 처리 포함 IP 추출 """
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
