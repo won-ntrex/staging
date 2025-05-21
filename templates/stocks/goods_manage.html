@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 <!-- 재고용 기본 Style -->
 	<link rel="stylesheet" href="/assets/Stock/stock.css?v=" />
 	<link rel="stylesheet" href="/assets/Stock/stock_ui2.css?v=" />
@@ -55,7 +57,7 @@
 	</div> 
 
 <!-- Search Form Area -->
-	
+{% include 'common/StockSearchForm.html' %}	
 
 <!-- List Area -->
 	<div class="goods-object mx-0">
@@ -111,56 +113,56 @@
 	
 <!-- Goods Handlebars source -->
 	<script id="hb-source-goods-object" type="text/x-handlebars-template">
-		{{#each .}}
-			<tr data-goods="{{goodskey}}" onclick="DetailGoodsView(this);">
+		[[#each .]]
+			<tr data-goods="[[goodskey]]" onclick="DetailGoodsView(this);">
 				<td class="table-img text-center align-middle">
-					<!-- <div class="table-img">{{image_html image}}</div> -->
-					<div class="table-img">{{image_custom image}}</div>
+					<!-- <div class="table-img">[[image_html image]]</div> -->
+					<div class="table-img">[[image_custom image]]</div>
 					<span class="subtitle">
-						<input type="checkbox" name="update_goods" value="{{link_goods_seq}}" class="updategoods">
+						<input type="checkbox" name="update_goods" value="[[link_goods_seq]]" class="updategoods">
 						<i class="fa-solid fa-chart-line text-underline-hover"></i>
-						<a class="text-underline-hover c-pointer importpricegrape" data-goodsseq="{{link_goods_seq}}">입고가</a>
+						<a class="text-underline-hover c-pointer importpricegrape" data-goodsseq="[[link_goods_seq]]">입고가</a>
 					</span>
 				</td>
 				<td class="goods-name position-relative">
-					[{{link_goods_seq}}]
-					{{goods_name}}
-					{{#checkIf option_state "==" "옵션상품"}}
+					[[[link_goods_seq]]]
+					[[goods_name]]
+					[[#checkIf option_state "==" "옵션상품"]]
 					<div class="fw-normal text-underline-hover">
 						<i class="fa-regular fa-rectangle-list"></i> 옵션상품
 					</div>
-					{{/checkIf}}
+					[[/checkIf]]
 				</td>
 				<td class="text-end px-2">
-					{{NumberComma total_stock}}
+					[[NumberComma total_stock]]
 				</td>
 				<td class="text-start ps-1">
 					<div class="sp1 py-1">
 						<span class="text-muted fw-bold">위치1)</span>
-						<span class="ps-2">{{nonehyphen sp1}}</span>
+						<span class="ps-2">[[nonehyphen sp1]]</span>
 					</div>
 					<div class="sp2 py-1">
 						<span class="text-muted fw-bold">위치2)</span>
-						<span class="ps-2">{{nonehyphen sp2}}</span>
+						<span class="ps-2">[[nonehyphen sp2]]</span>
 					</div>
 				</td>
 				<td class="text-start ps-1 align-middle">
 					<div class="py-1" title="제조사">
-						<i class="fa-solid fa-industry text-muted"></i> {{nonehyphen manufacture}}
+						<i class="fa-solid fa-industry text-muted"></i> [[nonehyphen manufacture]]
 					</div>
 					<div class="py-1" title="매입처">
-						<i class="fa-solid fa-store text-muted"></i> {{nonehyphen purchase}}
+						<i class="fa-solid fa-store text-muted"></i> [[nonehyphen purchase]]
 					</div>
 				</td>
 			</tr>
-		{{/each}}
+		[[/each]]
 	</script>
 
 <!-- Option Handlebars source -->
 	<script id="hb-source-option-object" type="text/x-handlebars-template">
 		<div class="m-0 p-1 pb-2 position-relative" id="option-goods-name">
 			<div class="me-4 p-2 fs-6 fw-bold">
-				[{{goods_seq}}] {{goods_name}}
+				[[[goods_seq]]] [[goods_name]]
 			</div>
 			<button type="button" class="btn-close border border-danger position-absolute top-0 end-0 mt-2 me-2 text-danger"
 				aria-label="Close"
@@ -168,41 +170,41 @@
 				></button>
 		</div>
 		<div class="me-4 mt-1 mb-1 fs-6 fw-bold">
-			<div class="summary-text px-3 pt-1 fw-normal">{{summary}}</div>
+			<div class="summary-text px-3 pt-1 fw-normal">[[summary]]</div>
 		</div>
 		<div class="row row-cols-auto mb-2 mx-0 pb-2 text-muted border-bottom">
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">입고가</span><span class="fw-bold">{{NumberComma supply_price}}</span>
+				<span class="item-title px-1">입고가</span><span class="fw-bold">[[NumberComma supply_price]]</span>
 			</div>
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">총재고</span><span class="fw-bold">{{NumberComma total_stock}}</span>
+				<span class="item-title px-1">총재고</span><span class="fw-bold">[[NumberComma total_stock]]</span>
 			</div>
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">재조사</span><span class="fw-bold">{{nonehyphen manufacture}}</span>
+				<span class="item-title px-1">재조사</span><span class="fw-bold">[[nonehyphen manufacture]]</span>
 			</div>
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">매입처</span><span class="fw-bold">{{nonehyphen purchase}}</span>
+				<span class="item-title px-1">매입처</span><span class="fw-bold">[[nonehyphen purchase]]</span>
 			</div>
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">판매가</span><span class="fw-bold">{{NumberComma price}}</span>
+				<span class="item-title px-1">판매가</span><span class="fw-bold">[[NumberComma price]]</span>
 			</div>
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">MOQ</span><span class="fw-bold">{{min_purchase_ea}}</span>
+				<span class="item-title px-1">MOQ</span><span class="fw-bold">[[min_purchase_ea]]</span>
 			</div>
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">MPQ</span><span class="fw-bold">{{min_purchase_ea_multiple}}</span>
+				<span class="item-title px-1">MPQ</span><span class="fw-bold">[[min_purchase_ea_multiple]]</span>
 			</div>
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">등록</span><span class="fw-normal">{{reg_dt}}</span>
+				<span class="item-title px-1">등록</span><span class="fw-normal">[[reg_dt]]</span>
 			</div>
 			<div class="col-md-auto pb-1">
-				<span class="item-title px-1">수정</span><span class="fw-normal">{{upd_dt}}</span>
+				<span class="item-title px-1">수정</span><span class="fw-normal">[[upd_dt]]</span>
 			</div>
 		</div>
 		<ul class="nav nav-tabs" role="tablist">
 			<li class="nav-item" role="presentation">
-				<a class="nav-link active c-pointer info-text" id="nav-tab-option" data-goodskey="{{goodskey}}" data-bs-toggle="tab" data-bs-target="#hb-tab-option" aria-controls="hb-tab-option" aria-selected="true">
-				{{#checkIf option_state "==" "option"}}옵션{{else}}정보{{/checkIf}}
+				<a class="nav-link active c-pointer info-text" id="nav-tab-option" data-goodskey="[[goodskey]]" data-bs-toggle="tab" data-bs-target="#hb-tab-option" aria-controls="hb-tab-option" aria-selected="true">
+				[[#checkIf option_state "==" "option"]]옵션[[else]]정보[[/checkIf]]
 				</a>
 			</li>
 			<li class="nav-item" role="presentation">
@@ -217,76 +219,76 @@
 			</li>
 		</ul>
 		<div class="tableFixHead tab-content mt-1 rounded">
-			{{#checkIf option_state "==" "option"}}
+			[[#checkIf option_state "==" "option"]]
 			<table class="table align-middle tab-pane active" id="hb-tab-option" role="tabpanel" aria-labelledby="nav-tab-option">
 				<thead>
-					<tr><th colspan={{olen}} class="text-center table-title-size">옵션</th></tr>
+					<tr><th colspan=[[olen]] class="text-center table-title-size">옵션</th></tr>
 					<tr>
-						{{#each options.0.otitles}}
-						<th style="width:{{../oper}}%">
-							{{this}}
-							<input id="op{{@index}}" style="width:95%;">
+						[[#each options.0.otitles]]
+						<th style="width:[[../oper]]%">
+							[[this]]
+							<input id="op[[@index]]" style="width:95%;">
 						</th>
-						{{/each}}
+						[[/each]]
 					</tr>
 				</thead>			
 				<tbody>
-					{{#each options}}
+					[[#each options]]
 					<tr>
-						{{#each onames}}
-						<td data-ogroup="{{@index}}" class="info-text">{{this}}</td>
-						{{/each}}
+						[[#each onames]]
+						<td data-ogroup="[[@index]]" class="info-text">[[this]]</td>
+						[[/each]]
 					</tr>
 					<tr>
-						<td colspan="{{../olen}}" class="border-0 border-bottom border-2 text-muted">
-							{{#each sp}}
+						<td colspan="[[../olen]]" class="border-0 border-bottom border-2 text-muted">
+							[[#each sp]]
 							
-								{{#checkIf @index '>' 0}}<hr class="mx-2 my-1" style="background-color: #b9b9b9;">{{/checkIf}}
+								[[#checkIf @index '>' 0]]<hr class="mx-2 my-1" style="background-color: #b9b9b9;">[[/checkIf]]
 								<div class="row mx-0">
-									<div class="col">수량 : {{NumberComma stock}}</div>
-									<div class="col">위치1 : {{nonehyphen sp1}}</div>
-									<div class="col">위치2 : {{nonehyphen sp2}}</div>
+									<div class="col">수량 : [[NumberComma stock]]</div>
+									<div class="col">위치1 : [[nonehyphen sp1]]</div>
+									<div class="col">위치2 : [[nonehyphen sp2]]</div>
 								</div>
 								<div class="row mx-0">
-									<div class="col">입고가 : {{NumberComma ../supply_price}}</div>
-									<div class="col">판매가 : {{NumberComma ../price}}</div>
-									<div class="col">문의담당 : {{nonehyphen manager}}</div>
+									<div class="col">입고가 : [[NumberComma ../supply_price]]</div>
+									<div class="col">판매가 : [[NumberComma ../price]]</div>
+									<div class="col">문의담당 : [[nonehyphen manager]]</div>
 								</div>
-							{{/each}}
+							[[/each]]
 						</td>
 					</tr>
-					{{/each}}
+					[[/each]]
 				</tbody>
 			</table>
-			{{else}}
+			[[else]]
 			<table class="table info mb-0 align-middle tab-pane active" id="hb-tab-option" role="tabpanel" aria-labelledby="nav-tab-option">
 				<tbody>
-					{{#each options}}
-						{{#each sp}}
-							{{#checkIf @index '>' 0}}<hr class="mx-2 my-1" style="background-color: #b9b9b9;">{{/checkIf}}
+					[[#each options]]
+						[[#each sp]]
+							[[#checkIf @index '>' 0]]<hr class="mx-2 my-1" style="background-color: #b9b9b9;">[[/checkIf]]
 							<tr>
-								<th class="info-text-col-title border-end">수량</th><td class="info-text-value">{{NumberComma stock}}</td>
+								<th class="info-text-col-title border-end">수량</th><td class="info-text-value">[[NumberComma stock]]</td>
 							</tr>
 							<tr>
-								<th class="info-text-col-title border-end">위치1</th><td class="info-text-value">{{nonehyphen sp1}}</td>
+								<th class="info-text-col-title border-end">위치1</th><td class="info-text-value">[[nonehyphen sp1]]</td>
 							</tr>
 							<tr>
-								<th class="info-text-col-title border-end">위치1</th><td class="info-text-value">{{nonehyphen sp2}}</td>
+								<th class="info-text-col-title border-end">위치1</th><td class="info-text-value">[[nonehyphen sp2]]</td>
 							</tr>
 							<tr>
-								<th class="info-text-col-title border-end">입고가</th><td class="info-text-value">{{NumberComma ../supply_price}}</td>
+								<th class="info-text-col-title border-end">입고가</th><td class="info-text-value">[[NumberComma ../supply_price]]</td>
 							</tr>
 							<tr>
-								<th class="info-text-col-title border-end">판매가</th><td class="info-text-value">{{NumberComma ../price}}</td>
+								<th class="info-text-col-title border-end">판매가</th><td class="info-text-value">[[NumberComma ../price]]</td>
 							</tr>
 							<tr>
-								<th class="info-text-col-title border-end">문의담당</th><td class="info-text-value">{{nonehyphen manager}}</td>
+								<th class="info-text-col-title border-end">문의담당</th><td class="info-text-value">[[nonehyphen manager]]</td>
 							</tr>
-						{{/each}}
-					{{/each}}
+						[[/each]]
+					[[/each]]
 				</tbody>
 			</table>
-			{{/checkIf}}
+			[[/checkIf]]
 			<div class="tab-pane w-100" id="hb-tab-slog" role="tabpanel" aria-labelledby="nav-tab-slog">
 				<div class="py-0">
 					<ul class="list-group list-group-flush" id="hb-target-logstock"></ul>
@@ -305,73 +307,73 @@
 
 <!-- List Handlebars source -->
 	<script id="hb-source-logstock" type="text/x-handlebars-template">
-		{{#each data.list}}
+		[[#each data.list]]
 		<li class="list-group-item p-0 m-0"
-			data-page="{{../pageset.nowpage}}"
-			data-collapse="#collapseO{{stock_goods_seq}}"
-			data-stockseq="{{stock_goods_seq}}"
-			data-goods="{{link_goods_seq}}"
-			data-name="{{goods_name}}"
-			data-img="{{image}}"
+			data-page="[[../pageset.nowpage]]"
+			data-collapse="#collapseO[[stock_goods_seq]]"
+			data-stockseq="[[stock_goods_seq]]"
+			data-goods="[[link_goods_seq]]"
+			data-name="[[goods_name]]"
+			data-img="[[image]]"
 		>			
 			<div class="row m-0 py-2">
 				<div class="col text-muted">
-					# {{pagecounter @index ../data.pageset.nowpage ../data.pageset.perpage}}
-					{{#checkIf ../data.option_state "==" "option"}}
+					# [[pagecounter @index ../data.pageset.nowpage ../data.pageset.perpage]]
+					[[#checkIf ../data.option_state "==" "option"]]
 					<span class="ps-3 fw-bold">
-						{{nonehyphen o_name}}
+						[[nonehyphen o_name]]
 					</span>
-					{{/checkIf}}
+					[[/checkIf]]
 				</div>
 			</div>
 			<div class="row row-cols-auto position-relative pb-3 m-0">
 				<div class="col-md-auto info-text">
-					{{stocklogtype stype stypename}}
+					[[stocklogtype stype stypename]]
 				</div>
 				<div class="col-md-auto info-text">
-					{{historystockstring note}}
+					[[historystockstring note]]
 				</div>
 				<div class="col-md-auto position-absolute end-0 text-muted text-end">
-					{{log_dt}}
+					[[log_dt]]
 				</div>
 			</div>
 		</li>
-		{{/each}}
+		[[/each]]
 	</script>
 
 	<script id="hb-source-logplace" type="text/x-handlebars-template">
-		{{#each data.list}}
+		[[#each data.list]]
 		<li class="list-group-item p-0 m-0"
-			data-page="{{../pageset.nowpage}}"
-			data-collapse="#collapseO{{stock_goods_seq}}"
-			data-stockseq="{{stock_goods_seq}}"
-			data-goods="{{link_goods_seq}}"
-			data-name="{{goods_name}}"
-			data-img="{{image}}"
+			data-page="[[../pageset.nowpage]]"
+			data-collapse="#collapseO[[stock_goods_seq]]"
+			data-stockseq="[[stock_goods_seq]]"
+			data-goods="[[link_goods_seq]]"
+			data-name="[[goods_name]]"
+			data-img="[[image]]"
 		>			
 			<div class="row m-0 py-2">
 				<div class="col text-muted">
-					# {{pagecounter @index ../data.pageset.nowpage ../data.pageset.perpage}}
-					{{#checkIf ../data.option_state "==" "option"}}
+					# [[pagecounter @index ../data.pageset.nowpage ../data.pageset.perpage]]
+					[[#checkIf ../data.option_state "==" "option"]]
 					<span class="ps-3 fw-bold">
-						{{nonehyphen o_name}}
+						[[nonehyphen o_name]]
 					</span>
-					{{/checkIf}}
+					[[/checkIf]]
 				</div>
 			</div>
 			<div class="row row-cols-auto position-relative pb-3 m-0">
 				<div class="col-md-auto info-text">
-					{{stockplacelogtype stype stypename}}
+					[[stockplacelogtype stype stypename]]
 				</div>
 				<div class="col-md-auto info-text">
-					{{historyplacestring chg_loc_name}}
+					[[historyplacestring chg_loc_name]]
 				</div>
 				<div class="col-md-auto position-absolute bottom-0 end-0 pt-1 text-muted text-end">
-					{{memberinfo}} {{log_dt}}
+					[[memberinfo]] [[log_dt]]
 				</div>
 			</div>
 		</li>
-		{{/each}}
+		[[/each]]
 	</script>
 
 <!-- Script Area -->
@@ -765,7 +767,8 @@
 			// 서버통신 결과 받기
 			let rdata = await new Promise((resolve, reject)=>{
 				$.ajax({
-					url: '/Stock/GManage_List_AsyncGet', // 요청 할 주소
+					url: '/Stock/GManage_List_AsyncGet/', // 요청 할 주소
+					headers: { "X-CSRFToken": csrftoken },
 					async: true, // false 일 경우 동기 요청으로 변경
 					type: 'POST',
 					data: data, // 전송할 데이터
@@ -1259,3 +1262,4 @@
 		}	// End of Function : DrawLogList
 
 	</script>
+	{% endblock %}

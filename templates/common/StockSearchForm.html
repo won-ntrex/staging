@@ -1,0 +1,218 @@
+	<div id="collape-form" class="row mx-0 mb-2 w-auto border rounded-3 bg-light minwidthunset collapse show">
+		<form class="col position-relative p-0 m-2" id="sea-form">
+			<div class="row row-cols-auto" style="width: fit-content;">
+				<div class="col">
+					<label for="s-goodsSeq" class="text-primary ps-2"># 상품번호</label>
+					<input type="number" class="form-control form-control-sm" name="s-goodsSeq" id="s-goodsSeq" placeholder="상품번호" style="width:130px;">
+				</div>
+				<div class="col">
+					<label for="s-goodsName" class="text-primary ps-2"># 상품명</label>
+					<input type="text" class="form-control form-control-sm" name="s-goodsName" id="s-goodsName" placeholder="상품명" style="width:130px;">
+				</div>
+				<div class="col">
+					<label for="l-manufacture" class="text-primary ps-2"># 제조사</label>
+					<input id="l-manufacture" type="text" class="form-control form-control-sm" data-group="code-search" data-type="manufacture" data-title="제조사">
+				</div>
+				<div class="col">
+					<label for="l-purchase" class="text-primary ps-2"># 매입처</label>
+					<input id="l-purchase" type="text" class="form-control form-control-sm" data-group="code-search" data-type="purchase" data-title="매입처">
+				</div>
+				<div class="col">
+					<label for="l-spcode1" class="text-primary ps-2"># 재고위치1</label>
+					<input id="l-spcode1" type="text" class="form-control form-control-sm" data-group="code-search" data-type="spcode1" data-title="재고위치1">
+				</div>
+				<div class="col">
+					<label for="l-spcode2" class="text-primary ps-2"># 재고위치2</label>
+					<input id="l-spcode2" type="text" class="form-control form-control-sm" data-group="code-search" data-type="spcode2" data-title="재고위치2">
+				</div>
+				<div class="col">
+					<label for="search-goods" class="text-primary ps-2">&nbsp;</label>
+					<button type="button" id="search-goods" class="btn btn-primary btn-sm form-control">조회</button>
+				</div>
+				<div class="col">
+					<label for="search-reset" class="text-primary ps-2">&nbsp;</label>
+					<button type="button" id="search-reset" class="btn btn-outline-secondary btn-sm form-control">검색 조건 초기화</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+<!-- Code Search Hidden Contents -->
+	<div id="code-search-contents"></div>
+
+    <script type="text/javascript" src="/assets/js/inputAutoComplete.js?v="></script>
+
+<!-- 상품 조회용 javaScirpt -->
+	<script>
+		/**
+		 * 최초 로드 후 최종 처리
+		 * 	※ 비동기 호출을 막기 위해 promise, async, await을 이용하는 함수를 호출하므로
+		 * 		ready() 인자 함수를 async 선언 함
+		 * @author yds@ntrex on 2023.07.04
+		 */
+		$(document).ready(async ()=>{
+			// let events = $._data($("#sea-form").find("input[name='s-goodsName']")[0], "events");
+			// let hasEvents = (events != null);
+			// console.log(hasEvents, events);
+
+
+			// 상품번호 INPUT Enter Key 반영
+			$("#sea-form").find("input[name='s-goodsSeq']").off("keydown").on("keydown", async function(e) {
+				e.stopPropagation();
+				e.stopImmediatePropagation();
+				if (e.keyCode === 13) {				
+					//GetList(1);
+					$("#search-goods").trigger("click");
+				}
+			});
+
+			// 조회 버튼 기능 부여
+			$("#search-goods").off("click").on("click", (e)=>{ GetList(1); });
+
+			// 검색 조건 초기화 버튼 기능 부여
+			$("#search-reset").off("click").on("click", (e)=>{
+				let form = $("#sea-form");
+				form.find("input, select").each((i, o)=>{
+					$(o).val("");
+				});
+			});
+
+			$("INPUT[data-group='code-search']").ajaxDebounceAutocomplete({
+                url: '/Code/CodeManage_List_V2_AsyncGet',  // 서버 엔드포인트 URL을 입력하세요.
+                // delay: 300,
+                // minLength: 1,
+            });
+
+		});
+		/**
+		 * 리스트 가져오기
+		 * @author yds@ntrex on 2023.06.08
+		 * @param {integer} page 페이지 번호
+		 */
+		async function GetList(page) {
+			// 페이지 번호 획득
+			let data = {"page":(page == undefined?1:page), "offset":30};
+			// 총 레코드 개수 획득
+			if (page > 1) data.totalcount = window.pageset.totalcount;
+
+			// ---- 검색 조건 처리 ----------------
+			let alldata = $("#sea-form").serializeObject();	// 폼의 모든 항목을 Object로 반환 받기
+
+			// 검색에 필요한 항목 추리기
+			data["where"] = Object.keys(alldata).reduce((a, key)=>{
+				// 's-' 를 포함하는 항목만 선택 : 코드 검색이 붙는 경우 'dp-', 'keyword-' 시작하는 항목이 추가로 붙기 때문
+				let confirmkey = key.split("s-");
+				if (confirmkey.length == 2) a[confirmkey[1]] = alldata[key];
+				return a;
+			}, {});
+            
+            // 재고위치1,2의 위치명 like 검색 지원을 위해 추가 항목 정의
+            likesp1 = $("input[data-group='code-search'][data-type='spcode1']").val();
+            likesp2 = $("input[data-group='code-search'][data-type='spcode2']").val();
+            hidesp1 = $("input[type=hidden][name='s-spcode1']");
+            hidesp2 = $("input[type=hidden][name='s-spcode2']");
+            if (likesp1 || likesp2) {
+                data['likesp'] = {"sp1":"" ,"sp2":""};
+                if (likesp1 != "" && likesp1 != hidesp1.data("cname")) {
+                    if (likesp1.length < 2) {
+                        MsgBox.Alert("재고위치1은 최소 2글자부터 검색 가능 합니다.");
+                        return true;
+                    }
+                    data["likesp"]["sp1"] = likesp1;
+                    data["where"]["spcode1"] = "";  // 지정했던 코드 비우기
+                }
+                if (likesp1 != "" && likesp2 != hidesp2.data("cname")) {
+                    if (likesp2.length < 2) {
+                        MsgBox.Alert("재고위치2은 최소 2글자부터 검색 가능 합니다.");
+                        return true;
+                    }
+                    data["likesp"]["sp2"] = likesp2;
+                    data["where"]["spcode2"] = "";  // 지정했던 코드 비우기
+                }
+            }
+			
+			// 서버통신 결과 받기
+			let rdata = await new Promise((resolve, reject)=>{
+				$.ajax({
+					url: '/Stock/GManage_List_UI2_AsyncGet/', // 요청 할 주소
+					async: true, // false 일 경우 동기 요청으로 변경
+					type: 'POST',
+					data: data, // 전송할 데이터
+					dataType: 'json', // xml, json, script, html
+					success: function(resData) {
+						//console.log("===== AJAX Success ==============");
+						//console.log(resData);
+						if (resData.state == 1) {
+							resolve({state:1, data:resData.data});
+						} else {
+							resolve({state:-1, title:"목록 가져오기 실패", message:"목록 획득 실패, 계속 반복되는 경우 관리자에게 문의해주세요.<br>"+AjaxErrorMessage(resData)})
+						}
+					},
+					error: function(resData) {
+						console.log("===== AJAX Fail ==============");
+						console.log(resData);
+						//CallCommonModal("목록 가져오기 실패", AjaxErrorMessage(resData));
+						resolve({state:-1, title:"목록 가져오기 실패", message:AjaxErrorMessage(resData)})
+					}
+				});	// End of Ajax
+			});	// End of Promise : rdata
+
+			// 조회 실패 메시지 출력 및 종료
+			if (rdata.state !== 1) {
+				CallCommonModal(rdata.title, rdata.message);
+				return true;
+			}
+
+			// 페이지처리를 위한 전역변수에 담기
+			window.pageset = rdata.data.pageset;
+
+			// 화면 출력 - 바코드검색 결과도 같이 사용할 수단으로 함수로 뺌
+			DrawList(rdata.data);
+
+		}	// End of Function : GetList
+	
+		/**
+		 * 검색 목록 출력
+		 * 	- Handlebars를 이용한 목록 출력
+		 * @author yds@ntrex on 2023.07.25
+		 * @param {object} rdata 서버 조회 결과
+		 */
+		function DrawList(rdata) {
+			// 조회 결과 화면 출력
+			hbs("hb-source-goods-object", rdata, "hb-target-goods-list-object", true, ()=>{
+				// 이미지 팝업용 모달 이벤트 : 화면 출력 전 이미지 교체 지정 실행
+				ImgModalImageChange();
+				
+				// 목록의 collapse toggle(Click 대상이 DIV, SPAN 인 경우만 처리)
+				$(".collapseParent").off("click").on('click', async (e)=>{
+					if ($(e.target)[0].nodeName != "DIV" && $(e.target)[0].nodeName != "SPAN") return true;	// 클릭 지점이 DIV, SPAN 아니면 스킵
+					if ($(e.target).closest(".collapse").length == 1) return true;							// 클릭 지점이 class collapse 내부이면 스킵
+					
+					// collapse 대상 찾기
+					let listCollapse = $(e.currentTarget).data('collapse');
+
+					// 데이터 출력이 없었던 경우에 실행 - 화면에 데이터 출력
+					let target = $(listCollapse).find('.option-stock');
+					if (target.children().length == 0) {
+						await DrawOptionStock(target);
+						$("#collapseGoodsMore"+target.data("stockseq")).removeClass("d-none");
+					} else {
+						// 본 기능의 collapse를 하게되면 로그 영역의 height, width 를 맞추는데 문제 발생으로 display를 toggle 시킴
+						// collapse show / hide
+						// let myCollapse = new bootstrap.Collapse($(listCollapse)[0]);				
+						// myCollapse.toggle();
+
+						$(listCollapse).toggle();
+						$("#collapseGoodsMore"+target.data("stockseq")).toggle();
+					}
+				});
+
+				// Pagination
+				window.pageset = rdata.pageset;
+				let pagination = SetPagination(rdata.pageset, GetList);
+				$("#pagination-area-object").empty().append(pagination);
+				// WIDTH 100%
+				//$("div[id^=hb-target-optionstock]").css({"width":"100% !important"}).removeClass("col-md-auto").addClass("col");
+			});
+		}	// End of Function : DrawList
+	</script>

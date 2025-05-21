@@ -5,5 +5,6 @@ app_name = 'stocks'
 
 urlpatterns = [
     path('', views.index, name='stock'),
-    path('goods_manage/', views.goods_manage, name='goods_manage'),
+    path('GoodsManage_DP/', views.GoodsManage_DP, name='goods_manage'),
+    path('GManage_List_AsyncGet/', views.GManage_List_AsyncGet, name='GManage_List_AsyncGet'),
 ]

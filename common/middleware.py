@@ -12,7 +12,7 @@ EXEMPT_URLS = [
     '/members/login_proc',
     '/members/test',
 ]
-
+#전체 사이트에 대해서 로그인 체크를 수행하고 미로그인시 지정된 url로 이동하도록 처리
 class LoginRequiredMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -24,7 +24,7 @@ class LoginRequiredMiddleware:
             return redirect(settings.LOGIN_URL)
         return self.get_response(request)
 
-
+#로그인 처리
 import logging
 from django.utils.deprecation import MiddlewareMixin
 

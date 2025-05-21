@@ -1,5 +1,5 @@
 from .members import NiMember
 from .goods import GoodsModel
-from .goods import dGoodsModel
+from .ni_code_model import NiCode
 
-__all__ = ['NiMember', 'GoodsModel', 'dGoodsModel']
+__all__ = ['NiMember', 'GoodsModel',  'NiCode']

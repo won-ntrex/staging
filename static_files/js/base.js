@@ -2,7 +2,7 @@
  * 기본 스크립트
  * @author yds@ntrex on 2023.02.16
  */
-
+	let csrftoken = Cookies.get('csrftoken');
 	var defaultDatePickerOption = {
 		format: "yyyy-mm-dd",	//데이터 포맷 형식(yyyy : 년 mm : 월 dd : 일 )
 				autoclose : true,		//사용자가 날짜를 클릭하면 자동 캘린더가 닫히는 옵션
@@ -40,6 +40,8 @@
 	 */
 	function hbs (sourceId, data, resultId, options, callback) {
 		var source = $("#"+sourceId).html();
+		// [[ ]] → {{ }}로 치환 - djaong의 구분자 처리와 handlebars의 구분자가 동일한 문제가 있어서 template페이지의 handlebars 구분자를 [[ ]] 로 수정함.
+		templateText = source.replace(/\[\[/g, '{{').replace(/\]\]/g, '}}');
 		var template = Handlebars.compile(source);
 		var html = template(data);
 		var append_type = "append";

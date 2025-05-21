@@ -9,11 +9,20 @@
     {% include 'common/head.html' %}
 </head>
 <body>
-    {% include 'common/navbar.html' %}
-    <!-- Left Sidebar -->
-	{% include sidebar_template|default:"common/sidebar.html" %}
-    {% block content %}
-    {% endblock %}
+   	<!-- container start -->
+	<div class="container-fluid">
+		<!-- row start -->
+		<div class="row justify-content-start bg-white">
+            {% include 'common/navbar.html' %}
+			<!-- Left Sidebar -->
+			{% include sidebar_template|default:"common/sidebar.html" %}	
+			<!-- contents start -->
+			<div class="col position-relative p-3 ps-4 bg-white border-start" id="current-contents">
+				{% block content %}
+                {% endblock %}
+			</div><!-- contents end -->
+		</div><!-- row end -->
+	</div><!-- container end -->
     
     {% include 'common/foot.html' %}
 </body>

@@ -146,6 +146,7 @@
 				let result = await getAjax(CO_COMPANY.maListUrl, {'co_code' : coCode});
 				if(result != false && result.state == 1){
 						let source = $("#hb-source-manager-list").html();
+						templateText = source.replace(/\[\[/g, '{{').replace(/\]\]/g, '}}');
 						let template = Handlebars.compile(source);
 						let html = template(result.data);
 						if(result.data.list.length){
