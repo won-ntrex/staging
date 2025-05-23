@@ -77,7 +77,7 @@ $(async () =>{
 	// inputAutoComplete.js에서 로딩 완료 후 처리 할 INPUT 처리를 함수로 지정
 	window.ajaxDebounceAutocompleteInit = function() {
 		$("INPUT[data-group='code-search']").ajaxDebounceAutocomplete({
-			url: '/Code/CodeManage_List_V2_AsyncGet'
+			url: '/Code/CodeManage_List_V2_AsyncGet/'
 		});
 	};
 	var script = document.createElement('script');

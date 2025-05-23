@@ -1,10 +1,10 @@
 let GOODSORDER = {
-	ListUrl :  '/Stock/GoodsOrder_AsyncGet',//리스트 
-	ExcelUrl : '/Stock/GoodsOrder_Excel',
-	SaveUrl :'/Stock/GoodsOrderStatus_Save',
-	PurchaseUrl :'/Stock/GetPurchase_AsyncGet',
-	OrderCompleteListUrl :  '/Stock/GoodsOrder_AsyncGet',//리스트 
-	DelUrl :'/Stock/GoodsOrder_Del',
+	ListUrl :  '/Stock/GoodsOrder_AsyncGet/',//리스트 
+	ExcelUrl : '/Stock/GoodsOrder_Excel/',
+	SaveUrl :'/Stock/GoodsOrderStatus_Save/',
+	PurchaseUrl :'/Stock/GetPurchase_AsyncGet/',
+	OrderCompleteListUrl :  '/Stock/GoodsOrder_AsyncGet/',//리스트 
+	DelUrl :'/Stock/GoodsOrder_Del/',
 	commonInit : () => {
 		// 검색 조건 초기화 버튼 기능 부여
 		$("#search-reset").off("click").on("click", (e)=>{
@@ -389,7 +389,8 @@ $(async () =>{
 	// inputAutoComplete.js에서 로딩 완료 후 처리 할 INPUT 처리를 함수로 지정
 	window.ajaxDebounceAutocompleteInit = function() {
 		$("INPUT[data-group='code-search']").ajaxDebounceAutocomplete({
-			url: '/Code/CodeManage_List_V2_AsyncGet'
+			url: '/Code/CodeManage_List_V2_AsyncGet/',
+			headers: { "X-CSRFToken": csrftoken },
 		});
 	};
 	var script = document.createElement('script');

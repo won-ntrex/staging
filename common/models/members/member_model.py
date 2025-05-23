@@ -83,3 +83,18 @@ class NiMember(models.Model):
     @property
     def is_active_user(self):
         return self.state == 'y'
+
+
+class NiMemberPermission(models.Model):
+    seq = models.BigAutoField(primary_key=True, db_comment='레코드 인덱스')
+    member_seq = models.BigIntegerField(db_comment='사용자 번호(ni_member:seq)')
+    permission = models.CharField(max_length=6, db_comment='사용자 메뉴 권한 코드(ni_code:002 참고)')
+    state = models.CharField(max_length=1, db_comment='권한 코드 지정 상태(y:활성, n:비활성)')
+    reg_dt = models.DateTimeField(db_comment='등록 일시')
+    upd_dt = models.DateTimeField(db_comment='수정 일시')
+
+    class Meta:
+        managed = False
+        db_table = 'ni_member_permission'
+        unique_together = (('member_seq', 'permission'),)
+        db_table_comment = '사용자 메뉴사용권한 테이블'

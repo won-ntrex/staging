@@ -1,3 +1,3 @@
-from .ni_member_model import NiMember
+from .member_model import NiMember
 
 __all__ = ['NiMember']

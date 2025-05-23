@@ -14,7 +14,8 @@ from pathlib import Path
 import os
 import environ
 
-from logging.handlers import TimedRotatingFileHandler
+#from logging.handlers import TimedRotatingFileHandler
+from concurrent_log_handler import ConcurrentRotatingFileHandler
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -57,9 +58,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'common.middleware.LoginRequiredMiddleware',  # 커스텀 미들웨어 추가 - 사이트 전체에 로그인후에  사용 가능하도록 하기 위함.
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'common.middleware.RequestLoggingMiddleware', # 커스텀 미들웨어 추가 - 로그 처리
+    'common.middleware.member.LoginRequiredMiddleware',  # 커스텀 미들웨어 추가 - 사이트 전체에 로그인후에  사용 가능하도록 하기 위함.
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'common.middleware.logging.RequestLoggingMiddleware', # 커스텀 미들웨어 추가 - 로그 처리
+    'common.middleware.logging.AccessLogMiddleware',
 ]
 
 # 내부 IP 설정
@@ -176,6 +178,7 @@ LOGGING = {
         'custom': {  # 파일 저장용
             'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
+            #'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
             'filename': os.path.join(LOG_DIR, 'custom.log'),  # 로그 저장 경로
             'formatter': 'verbose',
             'when': 'midnight',              # 매일 자정마다 새 파일 생성
@@ -197,6 +200,11 @@ LOGGING = {
             'propagate': False,
         },
         'django.utils.autoreload': { #이 설정이 없으면 custom에 함께 표시됨
+            'handlers': ['debug'],
+            'level': 'ERROR',  # ERROR도 기록 안 되게
+            'propagate': False,
+        },
+        'django.request': { #이 설정이 없으면 custom에 함께 표시됨
             'handlers': ['debug'],
             'level': 'ERROR',  # ERROR도 기록 안 되게
             'propagate': False,

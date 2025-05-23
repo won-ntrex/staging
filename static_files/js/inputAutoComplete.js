@@ -105,6 +105,7 @@
 								method: 'POST',
 								data: reqdata,
 								dataType: 'json',
+								headers: { "X-CSRFToken": csrftoken },
 								success: function(data) {
 									if (data.state == 1) {
 										let processedData = data.data.list.map(item => ({
