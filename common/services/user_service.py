@@ -15,7 +15,7 @@ def create_user(username: str, email: str, password: str):
     """
     user = User.objects.create_user(username=username, email=email, password=password)
     # 추가 로직 예: welcome email 발송, 로그 저장 등
-    return user
+    return user 
 
 def get_user_by_id(user_id: str):
     """
