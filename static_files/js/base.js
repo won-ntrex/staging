@@ -41,7 +41,7 @@
 	function hbs (sourceId, data, resultId, options, callback) {
 		var source = $("#"+sourceId).html();
 		// [[ ]] → {{ }}로 치환 - djaong의 구분자 처리와 handlebars의 구분자가 동일한 문제가 있어서 template페이지의 handlebars 구분자를 [[ ]] 로 수정함.
-		templateText = source.replace(/\[\[/g, '{{').replace(/\]\]/g, '}}');
+		source = source.replace(/\[\[/g, '{{').replace(/\]\]/g, '}}');
 		var template = Handlebars.compile(source);
 		var html = template(data);
 		var append_type = "append";

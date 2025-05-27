@@ -125,7 +125,7 @@
 					</span>
 				</td>
 				<td class="goods-name position-relative">
-					[[[link_goods_seq]]]
+					[[link_goods_seq]]
 					[[goods_name]]
 					[[#checkIf option_state "==" "옵션상품"]]
 					<div class="fw-normal text-underline-hover">
@@ -862,7 +862,7 @@
 
 					// 하단 페이징 처리
 					let pagination_top = SetPagination(data.pageset, GetList);
-					let pagination = SetPagination(data.pageset, GetList);
+					let pagination = SetPagination(data.pageset, GetList);console.log(pagination);
 					$("#pagination-area-object-top").empty().append(pagination_top);
 					$("#pagination-area-object").empty().append(pagination);
 					
