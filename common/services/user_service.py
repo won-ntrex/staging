@@ -2,6 +2,17 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 def create_user(username: str, email: str, password: str):
+    """
+    새로운 사용자를 생성합니다.
+
+    Args:
+        username (str): 사용자 이름
+        email (str): 이메일 주소
+        password (str): 비밀번호
+
+    Returns:
+        User: 생성된 사용자 객체
+    """
     user = User.objects.create_user(username=username, email=email, password=password)
     # 추가 로직 예: welcome email 발송, 로그 저장 등
     return user

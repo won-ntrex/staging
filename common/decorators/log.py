@@ -14,6 +14,19 @@ def log_execution(func):
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """
+        데코레이터로 감싼 함수의 실행 전후로 로그를 기록하는 내부 함수.
+
+        Args:
+            *args: 원본 함수에 전달되는 위치 인자
+            **kwargs: 원본 함수에 전달되는 키워드 인자
+
+        Returns:
+            원본 함수의 반환값
+
+        Raises:
+            Exception: 원본 함수 실행 중 발생한 예외를 다시 발생시킴
+        """
         start_time = time.time()
         log.info(f"▶ 함수 {func.__name__} 시작 - args: {args}, kwargs: {kwargs}")
         try:
