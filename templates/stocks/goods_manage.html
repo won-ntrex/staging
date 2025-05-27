@@ -432,7 +432,7 @@
 				});
 				
 				if(goodsSeq.length > 0){
-					let result =  getAjax('/Stock/GoodsManageUpdate', {
+					let result =  getAjax('/Stock/GoodsManageUpdate/', {
 						'goodsSeq' : goodsSeq.join(),//417, //link_goods_seq,
 					});
 
@@ -453,7 +453,7 @@
 				MsgBox.Prompt("디바이스마트 상품번호를 입력하세요.", "디바이스마트 상품번호", function(data){
 					if(data){
 						//console.log("result true", data)
-						let result = getAjax('/Stock/GManage_New_Goods_One_AsyncGet', {
+						let result = getAjax('/Stock/GManage_New_Goods_One_AsyncGet/', {
 							'goodsSeq' : data,
 						});
 

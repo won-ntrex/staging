@@ -6,10 +6,12 @@ def index(request):
      return render()
 
 def CodeManage_List_V2_AsyncGet(request):
-        '''
-            * [Ajax Call] 문의 담당 리스트 - 문의 담당자 목록을 별도로 볼수 있도록 하기 위해서 분리함
-            * @author won@ntrex.co.kr 2023.08.02
-        '''
+        """
+         [Ajax Call] 문의 담당 리스트 - 문의 담당자 목록을 별도로 볼수 있도록 하기 위해서 분리함
+
+        Note(opt):
+            won@ntrex.co.kr 25.05.27 최초 작성
+        """
         params = request.POST.dict()
         #params['type'] = 'managercode'
         params['offset'] = 12

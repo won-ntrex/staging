@@ -7,6 +7,8 @@ from .forms import LoginForm, CustomUserCreationForm
 from common.utils import log, php_sha256_enc
 from common.models import NiMember
 
+from common.services import user_service
+
 def login(request):
     form = LoginForm()
     return render(request, 'members/login.html', {'form': form})
@@ -19,6 +21,8 @@ def login_proc(request):
         if form.is_valid():
             id = form.cleaned_data['id']
             pw = form.cleaned_data['pw']
+
+            #user = user_service.create_user(id, pw)
 
             # Django에서 PHP와 동일한 방식으로 암호화된 비밀번호를 생성
             encrypted_pw = php_sha256_enc(pw)

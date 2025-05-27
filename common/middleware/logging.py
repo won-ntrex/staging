@@ -1,14 +1,19 @@
-import logging
 from django.utils.deprecation import MiddlewareMixin
+from common.utils.logger import log
+import logging
 
-'''
-    로그 처리를 수행하는 middleware 클래스로 구버전 방식임
-    구버전을 지원하기 위해 MiddlewareMixin를 상속 받아서 사용함.
-    @author won@ntrex.co.kr on 2025.05.22
-'''
+logger = logging.getLogger('custom')  # 설정에 등록된 logger 이름
+
 class RequestLoggingMiddleware(MiddlewareMixin):
-    logger = logging.getLogger('common')
-
+    '''
+        로그 처리를 수행하는 middleware 클래스로 구버전 방식임
+        구버전을 지원하기 위해 MiddlewareMixin를 상속 받아서 사용함.
+        @author won@ntrex.co.kr on 2025.05.22
+    '''
+    def __init__(self, get_response):
+        self.get_response = get_response
+        self.logger = logging.getLogger('custom')  # 설정에 등록된 logger 이름
+    
     def process_request(self, request):
         user = request.user.username if request.user.is_authenticated else 'Anonymous'
 

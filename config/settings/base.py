@@ -241,3 +241,17 @@ MEDIA_ROOT = BASE_DIR / 'uploads'
 
 #csrf 오류시에 호출할 view 명시
 CSRF_FAILURE_VIEW = 'common.utils.csrf_failure.csrf_failure'
+
+# Email backend for development (console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# 보안 관련 설정 강화
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+#SECURE_SSL_REDIRECT = True # HTTPS 강제
+SECURE_HSTS_SECONDS = 31536000 # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True

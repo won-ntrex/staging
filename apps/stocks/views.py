@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .forms import CheckManageListPostForm
 from common.models import GoodsModel
-from common.utils.logger import log
+from common.utils import log
+from common.decorators import log_execution
 
 def index(request):
     return render(request, 'stocks/index.html', {'sidebar_template' : 'common/sidebar_stock.html'})
@@ -11,6 +12,7 @@ def GoodsManage_DP(request):
 
     return render(request, 'stocks/goods_manage.html', {'sidebar_template' : 'common/sidebar_stock.html'})
 
+@log_execution
 def GManage_List_AsyncGet(request):
     '''
 	 * [Ajax Call] 상품목록 반환
@@ -25,8 +27,7 @@ def GManage_List_AsyncGet(request):
             params = {}
             params['page'] = form.cleaned_data.get('page', 1)
 
-            goods_list = GoodsModel.GetGoodsSearch(params)
-            data = list(goods_list.values())
+            data = GoodsModel.GetGoodsSearch(params)
             return JsonResponse({"state": True, "message": "성공", "data": data}, safe=False)
         else:
             return JsonResponse({"state" : False, "message": "파라미터 오류", "data" : { "error": "form invalid"}})

@@ -53,17 +53,16 @@ class Code(models.Model):
                 **{use_field: 'y'},
                 co_name__icontains=params['keyword']  # 검색어
             ).order_by('-reg_dt')
-            log.info(queryset.query)
+           
             total = queryset.count()
-            queryset.values(
-                code=models.F('co_code'), #query문중 AS 문장(별칭)을 추가할때 사용
+            queryset = queryset.annotate( # 원본 쿼리셋을 변경하지 않고, 새로운 쿼리셋을 반환합니다. 그럼으로 반드시 변수에 다시 담아야 함.
+                code=models.F('co_code'), #query문중 AS 문장(별칭)을 추가할때 사용 - 실제 쿼리에는 반영 안됨(django 자체적으로 alias를 적용 안시킴 결과set에만 적용)
                 name=models.F('co_name'),
-                m_use=models.F('m_use'),
-                p_use=models.F('p_use'),
-                reg_dt=models.F('reg_dt'),
-                upd_dt=models.F('upd_dt')
-                # 'm_use', 'p_use', 'reg_dt', 'upd_dt'
-            )[start:start+perpage]
+            ).values(
+                'code', 'name', 'm_use', 'p_use', 'reg_dt', 'upd_dt' #annotate후에 values에 필드 정의를 하지 않으면 표시 안됨
+            )
+            log.info(queryset.query)
+            queryset = queryset[start:start+perpage]
 
         elif params['type'] == 'spcode1' or params['type'] == 'spcode2':
              # 데이터 쿼리
@@ -74,7 +73,7 @@ class Code(models.Model):
                 name=models.F('stock_place'),
             ).order_by('-reg_dt')
             total = queryset.count()
-            queryset.values()[start:start+perpage]
+            queryset.values()[start:start+perpage] #이런식으로도 사용가능하다는 예제임
 
         elif params['type'] == 'managercoder' :
             # 기본 필터: name LIKE '%검색어%'
@@ -103,7 +102,7 @@ class Code(models.Model):
             ).order_by('-reg_dt')
             total = queryset.count()   
             queryset.values(
-                'code', 'name', 'id', 'm_use', 'reg_dt', 'upd_dt'
+                'code', 'name', 'id', 'reg_dt', 'upd_dt'
             )[start:start+perpage]
             
         elif params['type'] == 'member' :

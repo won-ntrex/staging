@@ -5,7 +5,7 @@ from django.db.models import Q
 
 class qGoodsModel():
     '''
-        상품 관리 클래스
+    상품 관리 클래스
     '''
     goods_seq = models.IntegerField() #상품 일련번호
 
@@ -14,7 +14,7 @@ class qGoodsModel():
 
     def get_list(args = {}):
         '''
-            상품 정보 불러오기 함수
+        상품 정보 불러오기 함수
         '''
         #with connection.cursor() as cursor:
         with connection['dmdev'].cursor() as cursor:
